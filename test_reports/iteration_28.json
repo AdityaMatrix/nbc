@@ -1,0 +1,105 @@
+{
+  "summary": "Comprehensive testing of CAPEX Portal iteration 28 features: Complete LoginPage redesign with space-themed dark mode, 3D rotating bearing animation, pull-lamp with dark↔lit transitions, 'Made by Saurabh Jangir' branding, Buyer→Capex Head mapping validation, User→DH mapping, GET /api/admin/capex-heads endpoint, 'Mapped To' column in user table, and Settings page theme picker for all users.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_capex_portal_iteration28.py",
+    "/app/test_reports/pytest/pytest_iteration28.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_capex_portal_iteration28.py"
+  ],
+  "success_rate": {
+    "backend": "100% (12/12 tests passed)",
+    "frontend": "100% - All features working"
+  },
+  "test_credentials": {
+    "admin": "admin@capex.com / admin123",
+    "buyer": "vijay@capex.com / buyer123",
+    "capex_head": "manoj@capex.com / capex123",
+    "user": "amit@capex.com / user123"
+  },
+  "seed_data_creation": "None - used existing data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All iteration 28 features tested and working. LoginPage has complete space-themed redesign with: dark background with stars/dust particles/nebula, 3D rotating bearing animation (data-testid='bearing-animation'), pull-lamp with 'PULL TO ILLUMINATE' text (data-testid='pull-cord'), clicking pull cord transitions to lit mode with multicolor background/glowing bearing/amber login button/'PULL TO DIM' text, 'Made by Saurabh Jangir' footer (data-testid='creator-branding'). Admin login redirects to /admin, other roles redirect to /dashboard. Admin Dashboard Users tab has 'Mapped To' column showing person name and role. Create User form: Role=User shows Plant+Dept+Map to DH (all mandatory), Role=Buyer shows Map to Capex Head (purple border, mandatory), Role=DH shows Plant+Dept (no Map to DH), Role=Capex Head shows no extra fields. Backend validates: buyer without mapped_dh_id returns 400, user without plant/dept/mapped_dh_id returns 400. GET /api/admin/capex-heads returns list of capex heads. Settings page theme picker available for all users with 14 theme options.",
+  "features_tested": {
+    "login_page_dark_mode": {
+      "space_background": "PASS - Dark gradient with stars, dust particles, nebula blobs",
+      "bearing_animation": "PASS - data-testid='bearing-animation' present, 3D rotating bearing with ball bearings",
+      "pull_lamp": "PASS - data-testid='pull-cord' present with 'PULL TO ILLUMINATE' text",
+      "login_card": "PASS - Clean login card with Email ID, Password, eye toggle, Forgot password, Login button, Google login",
+      "creator_branding": "PASS - data-testid='creator-branding' shows 'Made by Saurabh Jangir'"
+    },
+    "login_page_lit_mode": {
+      "pull_cord_click": "PASS - Clicking pull cord transitions to lit mode",
+      "background_transition": "PASS - Background changes to bright multicolor (purple/amber)",
+      "bearing_glow": "PASS - Bearing glows with golden/amber color (bearing-outer--lit class)",
+      "lamp_illumination": "PASS - Lamp bulb illuminates (lamp-bulb--lit class)",
+      "login_button_color": "PASS - Login button changes to amber/orange (login-btn--lit class)",
+      "cord_label_change": "PASS - Label changes to 'PULL TO DIM'"
+    },
+    "login_redirects": {
+      "admin_to_admin": "PASS - admin@capex.com/admin123 redirects to /admin",
+      "buyer_to_dashboard": "PASS - vijay@capex.com/buyer123 redirects to /dashboard",
+      "capex_head_login": "PASS - manoj@capex.com/capex123 works",
+      "user_login": "PASS - amit@capex.com/user123 works"
+    },
+    "admin_user_table": {
+      "mapped_to_column": "PASS - 'Mapped To' column header present in user table",
+      "shows_person_and_role": "PASS - Shows mapped person name and role"
+    },
+    "admin_create_user_role_user": {
+      "plant_field": "PASS - data-testid='user-plant-select' appears",
+      "department_field": "PASS - data-testid='user-dept-select' appears",
+      "map_to_dh_field": "PASS - data-testid='user-dh-select' appears",
+      "mandatory_labels": "PASS - Shows 'PLANT & DEPARTMENT (MANDATORY)' and 'MAP TO DEPARTMENT HEAD (MANDATORY)'"
+    },
+    "admin_create_user_role_buyer": {
+      "map_to_capex_head": "PASS - data-testid='user-ch-select' appears with purple border section",
+      "no_plant": "PASS - Plant field NOT shown",
+      "no_department": "PASS - Department field NOT shown",
+      "no_map_to_dh": "PASS - Map to DH field NOT shown",
+      "mandatory_label": "PASS - Shows 'MAP TO CAPEX HEAD (MANDATORY)'"
+    },
+    "admin_create_user_role_dh": {
+      "plant_field": "PASS - Plant field shown",
+      "department_field": "PASS - Department field shown",
+      "no_map_to_dh": "PASS - Map to DH field NOT shown",
+      "no_map_to_ch": "PASS - Map to Capex Head field NOT shown"
+    },
+    "admin_create_user_role_capex_head": {
+      "no_extra_fields": "PASS - No Plant/Dept/Map fields shown"
+    },
+    "backend_validation": {
+      "buyer_no_mapping_400": "PASS - POST /api/admin/users with role=buyer without mapped_dh_id returns 400",
+      "buyer_with_mapping_success": "PASS - Buyer with Capex Head mapping creates successfully",
+      "user_no_plant_dept_400": "PASS - User without plant/dept returns 400",
+      "user_no_dh_mapping_400": "PASS - User without DH mapping returns 400"
+    },
+    "capex_heads_api": {
+      "get_capex_heads": "PASS - GET /api/admin/capex-heads returns list of capex heads",
+      "requires_admin": "PASS - Non-admin blocked with 403"
+    },
+    "department_heads_api": {
+      "get_dhs": "PASS - GET /api/admin/department-heads returns list of DHs"
+    },
+    "settings_page": {
+      "theme_picker_available": "PASS - Theme picker available for all users (tested with buyer)",
+      "theme_count": "PASS - 14 theme options displayed"
+    }
+  },
+  "mocked_apis": {
+    "has_mocked_apis": false,
+    "mocked_apis_list": []
+  }
+}

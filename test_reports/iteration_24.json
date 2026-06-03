@@ -1,0 +1,99 @@
+{
+  "summary": "Comprehensive testing of CAPEX Portal redesigned Login Page (split-screen with bearing animation), Admin Dashboard (dark industrial theme), Sidebar navigation (no Samples option), and New Sample from Request Detail. All 15 backend tests pass. All frontend features working correctly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_capex_portal_features.py",
+    "/app/test_reports/pytest/pytest_capex_features.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_capex_portal_features.py"
+  ],
+  "success_rate": {
+    "backend": "100% (15/15 tests passed)",
+    "frontend": "100% - All features working"
+  },
+  "test_credentials": {
+    "admin": "admin@capex.com / admin123",
+    "buyer": "vijay@capex.com / buyer123",
+    "capex_head": "manoj@capex.com / capex123",
+    "department_head": "rajesh@capex.com / dh123"
+  },
+  "seed_data_creation": "None - used existing data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All features tested and working. Login page has split-screen layout: left panel shows rotating bearing animation with inspection lamp and starfield, right panel shows login form with demo credential buttons. Admin login redirects to /admin, other roles to /dashboard. Admin Dashboard has dark industrial theme with 5 tabs (Overview, Plants, Departments, Users, Resets). Sidebar shows Dashboard, CAPEX Requests, Analytics, Users - NO Samples option. New Sample button appears in Request Detail right sidebar for Buyer/Capex Head roles.",
+  "features_tested": {
+    "login_page": {
+      "split_layout": "PASS - Left panel (bearing animation), Right panel (login form)",
+      "bearing_animation": "PASS - Rotating bearing with ball bearings, orbital particles, starfield",
+      "inspection_lamp": "PASS - Lamp with beam effect present",
+      "demo_credentials_section": "PASS - 4 demo buttons (Admin, Buyer, Capex Head, Dept Head)",
+      "demo_admin_btn_autofill": "PASS - Fills admin@capex.com / admin123",
+      "demo_buyer_btn_autofill": "PASS - Fills vijay@capex.com / buyer123",
+      "password_visibility_toggle": "PASS - Eye icon toggles password visibility",
+      "forgot_password_link": "PASS - Opens reset form",
+      "back_to_login_link": "PASS - Returns to main form",
+      "google_login_button": "PASS - Present and styled",
+      "admin_login_redirect": "PASS - admin@capex.com redirects to /admin",
+      "buyer_login_redirect": "PASS - vijay@capex.com redirects to /dashboard"
+    },
+    "admin_dashboard": {
+      "dark_industrial_theme": "PASS - Dark background with cyan accents",
+      "overview_tab": "PASS - Shows Total Users (11), Total Requests (7), Plants (4), Departments (16), Pending Resets (0)",
+      "users_by_role_badges": "PASS - Shows role breakdown badges",
+      "plants_tab": "PASS - Lists plants, Add Plant button opens dialog",
+      "departments_tab": "PASS - Lists departments, Add Department button works",
+      "users_tab": "PASS - Shows user table with Name, Email, Role columns",
+      "resets_tab": "PASS - Shows Password Reset Requests section",
+      "logout_button": "PASS - Present and redirects to /login"
+    },
+    "sidebar_navigation": {
+      "dashboard_nav": "PASS - Present",
+      "capex_requests_nav": "PASS - Present (renamed from 'All Requests')",
+      "analytics_nav": "PASS - Present for buyer/capex_head",
+      "users_nav": "PASS - Present for buyer/capex_head",
+      "no_samples_nav": "PASS - NO 'Samples' or 'Sample Requests' option in sidebar"
+    },
+    "new_sample_from_request_detail": {
+      "new_sample_button_visible": "PASS - Button appears in right sidebar Sample Requests card for Buyer role",
+      "button_data_testid": "PASS - data-testid='new-sample-from-detail-btn'",
+      "dialog_opens": "PASS - Clicking button opens New Sample Request dialog",
+      "dialog_title": "PASS - 'New Sample Request' title with request ID",
+      "material_description_field": "PASS - Input field with placeholder",
+      "quantity_field": "PASS - Qty input field present",
+      "add_another_item_button": "PASS - '+ Add Another Item' button present",
+      "create_sample_request_button": "PASS - 'Create Sample Request' button present"
+    },
+    "backend_api_tests": {
+      "POST /api/auth/login admin": "PASS - Returns access_token, user with admin role",
+      "POST /api/auth/login buyer": "PASS - Returns access_token, user with buyer role",
+      "POST /api/auth/login capex_head": "PASS - Returns access_token, user with capex_head role",
+      "POST /api/auth/login dept_head": "PASS - Returns access_token, user with department_head role",
+      "POST /api/auth/login invalid": "PASS - Returns 401",
+      "GET /api/admin/stats": "PASS - Returns total_users, total_requests, total_plants, total_departments, pending_resets, role_breakdown",
+      "GET /api/admin/plants": "PASS - Returns plant list",
+      "GET /api/admin/departments": "PASS - Returns department list",
+      "GET /api/admin/users": "PASS - Returns user list with roles",
+      "GET /api/admin/password-reset-requests": "PASS - Returns reset requests",
+      "Non-admin blocked from admin APIs": "PASS - Returns 403",
+      "POST /api/auth/forgot-password": "PASS - Submits reset request",
+      "GET /api/capex-requests": "PASS - Returns request list",
+      "GET /api/sample-requests": "PASS - Returns sample requests",
+      "POST /api/auth/google-login endpoint": "PASS - Endpoint exists"
+    }
+  },
+  "mocked_apis": {
+    "has_mocked_apis": true,
+    "mocked_apis_list": ["Forgot Password is admin-assisted (no email sent)", "Resend email notifications pending"]
+  }
+}

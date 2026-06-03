@@ -1,0 +1,462 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 222 47% 11%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 214 32% 91%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 214 32% 91%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 243 75% 59%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 350 89% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 243 75% 59%;
+    --radius: 0.75rem;
+    
+    --success: 160 84% 39%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    
+    --chart-1: 243 75% 59%;
+    --chart-2: 160 84% 39%;
+    --chart-3: 38 92% 50%;
+    --chart-4: 350 89% 60%;
+    --chart-5: 280 65% 60%;
+    
+    /* Theme variables - defaults */
+    --theme-primary: #4F46E5;
+    --theme-secondary: #6366F1;
+    --theme-accent: #818CF8;
+    --theme-sidebar: #1E293B;
+    --theme-sidebar-text: #94A3B8;
+    --theme-background: #F8FAFC;
+    --theme-card: #FFFFFF;
+    --theme-text: #1E293B;
+  }
+}
+
+/* Gen-Z Glassmorphism Styles */
+@layer components {
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .glass-dark {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .glass-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  }
+  
+  .glass-hover {
+    transition: all 0.3s ease;
+  }
+  
+  .glass-hover:hover {
+    background: rgba(255, 255, 255, 0.85);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  }
+  
+  .glow {
+    box-shadow: 0 0 30px -5px var(--theme-primary);
+  }
+  
+  .glow-sm {
+    box-shadow: 0 0 20px -5px var(--theme-primary);
+  }
+  
+  .gradient-border {
+    position: relative;
+    background: linear-gradient(var(--theme-background), var(--theme-background)) padding-box,
+                linear-gradient(135deg, var(--theme-primary), var(--theme-secondary)) border-box;
+    border: 2px solid transparent;
+  }
+  
+  .text-gradient {
+    background: linear-gradient(135deg, var(--theme-primary), var(--theme-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .mesh-gradient {
+    background: 
+      radial-gradient(at 40% 20%, rgba(79, 70, 229, 0.15) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, rgba(16, 185, 129, 0.1) 0px, transparent 50%),
+      radial-gradient(at 80% 100%, rgba(245, 158, 11, 0.1) 0px, transparent 50%),
+      linear-gradient(180deg, var(--theme-background) 0%, var(--theme-background) 100%);
+  }
+  
+  .shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+  
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  
+  .float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    background-color: var(--theme-background) !important;
+    color: var(--theme-text);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', sans-serif;
+    color: var(--theme-text);
+  }
+  
+  code, pre {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Links */
+  a {
+    color: var(--theme-primary);
+  }
+  
+  a:hover {
+    color: var(--theme-secondary);
+  }
+}
+
+/* Theme-aware utility classes */
+.theme-primary {
+  color: var(--theme-primary) !important;
+}
+
+.theme-bg-primary {
+  background-color: var(--theme-primary) !important;
+}
+
+.theme-bg-secondary {
+  background-color: var(--theme-secondary) !important;
+}
+
+.theme-border-primary {
+  border-color: var(--theme-primary) !important;
+}
+
+.theme-card {
+  background-color: var(--theme-card) !important;
+}
+
+/* Override primary buttons to use theme */
+.btn-theme-primary,
+button[data-theme="primary"],
+.bg-primary {
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-secondary)) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.btn-theme-primary:hover,
+button[data-theme="primary"]:hover {
+  filter: brightness(1.1);
+}
+
+/* Theme accent for badges and highlights */
+.theme-accent-bg {
+  background-color: rgba(var(--theme-primary-rgb), 0.1) !important;
+}
+
+.theme-accent-text {
+  color: var(--theme-primary) !important;
+}
+
+/* Override Tailwind indigo classes to use theme */
+.text-indigo-600,
+.text-indigo-700,
+.text-indigo-500 {
+  color: var(--theme-primary) !important;
+}
+
+.bg-indigo-600,
+.bg-indigo-500,
+.bg-indigo-700 {
+  background-color: var(--theme-primary) !important;
+}
+
+.bg-indigo-50,
+.bg-indigo-100 {
+  background-color: rgba(var(--theme-primary-rgb), 0.1) !important;
+}
+
+.border-indigo-600,
+.border-indigo-500,
+.border-indigo-200,
+.border-indigo-300 {
+  border-color: var(--theme-primary) !important;
+}
+
+.hover\:bg-indigo-700:hover,
+.hover\:bg-indigo-600:hover {
+  background-color: var(--theme-secondary) !important;
+}
+
+.hover\:text-indigo-700:hover,
+.hover\:text-indigo-600:hover {
+  color: var(--theme-secondary) !important;
+}
+
+/* Override violet classes */
+.text-violet-600,
+.text-violet-700,
+.text-violet-500 {
+  color: var(--theme-secondary) !important;
+}
+
+.bg-violet-600,
+.bg-violet-500 {
+  background-color: var(--theme-secondary) !important;
+}
+
+.bg-violet-50,
+.bg-violet-100 {
+  background-color: rgba(var(--theme-secondary-rgb), 0.1) !important;
+}
+
+/* Gradient overrides */
+.from-indigo-600,
+.from-indigo-500 {
+  --tw-gradient-from: var(--theme-primary) !important;
+}
+
+.to-violet-600,
+.to-violet-500 {
+  --tw-gradient-to: var(--theme-secondary) !important;
+}
+
+.via-indigo-600 {
+  --tw-gradient-via: var(--theme-primary) !important;
+}
+
+/* Ring/focus colors */
+.ring-indigo-500,
+.ring-indigo-600,
+.focus\:ring-indigo-500:focus {
+  --tw-ring-color: var(--theme-primary) !important;
+}
+
+/* Shadow colors */
+.shadow-indigo-500\/25,
+.shadow-indigo-500\/20 {
+  --tw-shadow-color: rgba(var(--theme-primary-rgb), 0.25) !important;
+}
+
+/* Cards and containers */
+.bg-white {
+  background-color: var(--theme-card) !important;
+}
+
+/* Active nav item uses theme */
+.nav-active-theme {
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-secondary)) !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out forwards;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* Stagger animations */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+
+/* Glass effect */
+.glass {
+  @apply bg-white/80 backdrop-blur-md border border-slate-200/50;
+}
+
+.glass-dark {
+  @apply bg-slate-900/80 backdrop-blur-md border border-slate-700/50;
+}
+
+/* Card hover effect */
+.card-hover {
+  @apply transition-all duration-300;
+}
+
+.card-hover:hover {
+  @apply shadow-lg -translate-y-1;
+}
+
+/* Status badge styles */
+.status-badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.status-pending {
+  @apply bg-amber-100 text-amber-800;
+}
+
+.status-approved {
+  @apply bg-emerald-100 text-emerald-800;
+}
+
+.status-rejected {
+  @apply bg-rose-100 text-rose-800;
+}
+
+.status-processing {
+  @apply bg-blue-100 text-blue-800;
+}
+
+.status-completed {
+  @apply bg-slate-100 text-slate-800;
+}
+
+/* Sidebar styles */
+.sidebar-item {
+  @apply flex items-center gap-3 px-4 py-3 text-slate-300 rounded-lg transition-colors duration-200;
+}
+
+.sidebar-item:hover {
+  @apply bg-slate-800 text-white;
+}
+
+.sidebar-item.active {
+  @apply bg-indigo-600 text-white;
+}
+
+/* Form styles */
+.form-section {
+  @apply bg-white rounded-xl border border-slate-200 p-6 space-y-6;
+}
+
+/* Table styles */
+.table-row-hover:hover {
+  @apply bg-slate-50;
+}
+
+/* Gradient text */
+.gradient-text {
+  @apply bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent;
+}
+
+/* Focus visible */
+.focus-ring {
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2;
+}
+
+/* Hide Made with Emergent badge globally */
+div[class*="emergent-watermark"],
+div[id*="emergent-badge"],
+.made-with-emergent {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+

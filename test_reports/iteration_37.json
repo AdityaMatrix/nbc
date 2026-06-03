@@ -1,0 +1,131 @@
+{
+  "summary": "Comprehensive testing of Admin Access Control Panel with role-based preview mode. Backend API tests: 8/8 PASSED. Frontend UI tests verified: role tabs, preview mode, toggle functionality, Show All/Hide All, module toggle, Exit Preview. Found 1 BUG: Preview mode doesn't change Dashboard layout based on preview role - only filters items.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Dashboard.jsx",
+        "issue": "Preview mode doesn't change Dashboard layout based on preview role. When previewing as Capex Head, the Dashboard still renders the admin layout (which shows only Cost Savings card after filtering) instead of the Capex Head layout (4 cards: Budget Utilized, Pending Approvals, Cost Savings, Completion Rate). The hasAccess filter works correctly, but the role-based conditional rendering (user?.role === 'capex_head') doesn't consider the preview role.",
+        "selector": "Dashboard stat cards section",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_preview_mode.py",
+    "/app/test_reports/pytest/pytest_preview_mode.xml"
+  ],
+  "action_items": [
+    "FIX: Dashboard.jsx should use previewRole from useAccessControl hook to determine which stat card layout to render. Currently it uses user?.role which doesn't change in preview mode. The fix should check: const effectiveRole = previewRole || user?.role; and use effectiveRole for conditional rendering."
+  ],
+  "critical_code_review_comments": [
+    "Dashboard.jsx line 80: useAccessControl returns previewRole but it's not being used for layout decisions",
+    "Dashboard.jsx lines 137-139: isUserRole, isBuyer, isDeptHead should consider previewRole",
+    "Dashboard.jsx line 888: user?.role === 'capex_head' should be effectiveRole === 'capex_head'"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_preview_mode.py"
+  ],
+  "success_rate": {
+    "backend": "100% (8/8 tests passed)",
+    "frontend": "95% (preview mode works but layout doesn't change)"
+  },
+  "test_credentials": {
+    "admin": "admin@capex.com / admin123",
+    "buyer": "vijay@capex.com / buyer123",
+    "department_head": "rajesh@capex.com / dh123",
+    "capex_head": "manoj@capex.com / capex123"
+  },
+  "seed_data_creation": "None - used existing test credentials",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Access Control Preview Mode testing completed. Key findings: 1) Preview banner appears correctly with role name and Exit Preview button. 2) hasAccess filter correctly hides/shows items based on preview role permissions. 3) BUG: Dashboard layout doesn't change based on preview role - it still uses user?.role for conditional rendering. 4) Toggle individual items works. 5) Show All/Hide All works. 6) Module toggle works. 7) Reset to defaults works. 8) RequestDetail access control sections work correctly for Buyer role.",
+  "features_tested": {
+    "backend_preview_buyer": {
+      "test": "GET /api/admin/access-config/preview/buyer",
+      "result": "PASS",
+      "details": "Returns correct permissions - Buyer sees Cost Savings, My Assigned, Completed, In Progress, Purchase Value; hidden: Budget Utilized, Completion Rate"
+    },
+    "backend_preview_user": {
+      "test": "GET /api/admin/access-config/preview/user",
+      "result": "PASS"
+    },
+    "backend_preview_capex_head": {
+      "test": "GET /api/admin/access-config/preview/capex_head",
+      "result": "PASS",
+      "details": "Returns correct permissions - Capex Head sees Budget Utilized, Pending Approvals, Cost Savings, Completion Rate"
+    },
+    "backend_preview_department_head": {
+      "test": "GET /api/admin/access-config/preview/department_head",
+      "result": "PASS"
+    },
+    "backend_preview_requires_admin": {
+      "test": "Non-admin gets 403 on preview endpoint",
+      "result": "PASS"
+    },
+    "backend_preview_invalid_role": {
+      "test": "Invalid role returns all items hidden",
+      "result": "PASS"
+    },
+    "frontend_role_tabs": {
+      "test": "5 role tabs with visible/total counts",
+      "result": "PASS",
+      "details": "User (11/31), Buyer (20/31), Dept Head (18/31), Process Eng. (12/31), Capex Head (25/31)"
+    },
+    "frontend_preview_button": {
+      "test": "Preview as Role button shows correct role name",
+      "result": "PASS"
+    },
+    "frontend_preview_banner": {
+      "test": "Green preview banner appears with role name and Exit Preview button",
+      "result": "PASS"
+    },
+    "frontend_preview_buyer_cards": {
+      "test": "Buyer preview shows correct stat cards",
+      "result": "PASS",
+      "details": "Shows: My Assigned, Completed, In Progress, Total Purchase Value, Cost Savings. Hidden: Budget Utilized, Completion Rate"
+    },
+    "frontend_preview_capex_head_cards": {
+      "test": "Capex Head preview shows correct stat cards",
+      "result": "PARTIAL FAIL",
+      "details": "BUG: Only shows Cost Savings card. Should show 4 cards (Budget Utilized, Pending Approvals, Cost Savings, Completion Rate) but Dashboard layout doesn't change based on preview role"
+    },
+    "frontend_exit_preview": {
+      "test": "Exit Preview clears banner and navigates to /admin",
+      "result": "PASS"
+    },
+    "frontend_toggle_item": {
+      "test": "Toggle individual item OFF for role, save, preview - item hidden",
+      "result": "PASS",
+      "details": "Toggled Cost Savings OFF for Buyer, saved, previewed - Cost Savings correctly hidden"
+    },
+    "frontend_show_all_hide_all": {
+      "test": "Show All/Hide All button toggles all items for role",
+      "result": "PASS",
+      "details": "Buyer count changed from 20/31 to 27/31 after Show All"
+    },
+    "frontend_module_toggle": {
+      "test": "Module toggle disables entire module",
+      "result": "PASS",
+      "details": "Shows 'Module disabled. All items are hidden for non-admin users.' message"
+    },
+    "frontend_reset": {
+      "test": "Reset button restores defaults",
+      "result": "PASS"
+    },
+    "frontend_request_detail_access": {
+      "test": "RequestDetail sections respect access control for Buyer",
+      "result": "PASS",
+      "details": "Buyer sees: Supplier details, Comments, Assigned Buyer. Hidden: Capex Head Module"
+    }
+  },
+  "mocked_apis": {
+    "has_mocked_apis": false,
+    "mocked_apis_list": []
+  }
+}

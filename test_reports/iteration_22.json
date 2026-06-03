@@ -1,0 +1,65 @@
+{
+  "summary": "Bulk Upload History and Rollback feature testing complete. All 9 backend tests pass. Frontend UI working correctly - Upload tab, History tab, rollback functionality all verified.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Dashboard table",
+        "issues": ["Console warnings about HTML hydration errors (<th>/<td>/<tr> cannot be child of <span>) - pre-existing issue from Emergent preview environment, does not affect functionality"]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_bulk_upload_history_rollback.py",
+    "/app/test_reports/pytest/pytest_bulk_upload_history_rollback.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_bulk_upload_history_rollback.py"
+  ],
+  "success_rate": {
+    "backend": "100% (9/9 tests passed)",
+    "frontend": "100% - All bulk upload history and rollback features working"
+  },
+  "test_credentials": {
+    "capex_head": "manoj@capex.com / capex123",
+    "buyer": "vijay@capex.com / buyer123"
+  },
+  "seed_data_creation": "Test data created and cleaned up during testing",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Bulk Upload History and Rollback feature fully tested. New endpoints: GET /api/capex-requests/bulk-upload/history (returns upload logs), POST /api/capex-requests/bulk-upload/{upload_id}/rollback (deletes created requests, reverts updated requests). Frontend BulkUploadDialog has Upload and History tabs. Rollback marks log as 'rolled_back' with timestamp and user. Double rollback returns 400.",
+  "features_tested": {
+    "backend_api_tests": {
+      "GET /api/capex-requests/bulk-upload/history": "PASS - Returns list of upload logs with correct metadata",
+      "POST /api/capex-requests/bulk-upload creates history log": "PASS - Upload creates log with upload_id, filename, user, timestamp, created_request_ids, updated_snapshots",
+      "POST /api/capex-requests/bulk-upload/{upload_id}/rollback deletes created": "PASS - Deletes requests created in the upload",
+      "POST /api/capex-requests/bulk-upload/{upload_id}/rollback reverts updated": "PASS - Reverts updated requests to previous values using stored snapshots",
+      "Rollback marks log as rolled_back": "PASS - Sets status='rolled_back', rolled_back_at, rolled_back_by",
+      "Double rollback returns 400": "PASS - Returns 400 with 'already rolled back' message",
+      "Rollback nonexistent upload returns 404": "PASS",
+      "History requires authentication": "PASS - Returns 401/403 without token",
+      "Rollback requires authentication": "PASS - Returns 401/403 without token"
+    },
+    "frontend_ui_tests": {
+      "Upload tab visible": "PASS - Shows template download and file upload",
+      "History tab visible": "PASS - Shows upload history entries",
+      "Download Template button": "PASS - Downloads Excel template with 3 sheets",
+      "File drop zone": "PASS - Accepts drag-and-drop and click-to-browse",
+      "History list loads": "PASS - Displays upload history with metadata",
+      "Active entries show Undo button": "PASS - Rollback button visible for active uploads",
+      "Rolled back entries show badge": "PASS - 'Rolled Back' badge displayed, no Undo button",
+      "Rollback via UI": "PASS - Clicking Undo triggers rollback, shows success toast, updates status"
+    }
+  },
+  "mocked_apis": {
+    "has_mocked_apis": true,
+    "mocked_apis_list": ["Resend email notifications"]
+  }
+}

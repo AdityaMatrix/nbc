@@ -1,0 +1,106 @@
+{
+  "summary": "Verified data consistency fix for Purchase Value and Cost Savings calculations. All 8 features tested and passing. Backend API returns correct buyer-specific data (total_purchase_value=10104094, cost_avoidance=3206406) and Capex Head global data (total_purchase_value=18270598, cost_avoidance=3716885). Frontend stat cards and Analytics charts match API values exactly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Dashboard",
+        "issues": ["Console warnings about HTML hydration errors - <th>/<td>/<tr> cannot be child of <span>. These are React hydration warnings from the Emergent preview environment but don't affect functionality (pre-existing issue from iteration 13-16)."]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_analytics_consistency.py",
+    "/app/test_reports/pytest/pytest_analytics_consistency.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_analytics_consistency.py"
+  ],
+  "success_rate": {
+    "backend": "100% (15/15 tests passed)",
+    "frontend": "100% (all features verified)"
+  },
+  "test_credentials": {
+    "capex_head": "manoj@capex.com / capex123",
+    "buyer": "vijay@capex.com / buyer123"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Data consistency fix verified. Backend uses unified supplier selection (is_ordered→selected→first) for both stat cards and monthly_trend. Buyer API returns buyer-specific financial data. Capex Head API returns global data. Frontend uses same supplier selection logic.",
+  "test_results": {
+    "test_1_buyer_total_purchase_value": {
+      "status": "PASS",
+      "description": "Buyer API returns total_purchase_value=10104094. Frontend stat card shows ₹1,01,04,094. Values match exactly.",
+      "expected": 10104094,
+      "actual": 10104094
+    },
+    "test_2_buyer_cost_savings": {
+      "status": "PASS",
+      "description": "Buyer API returns cost_avoidance=3206406. Frontend stat card shows ₹32,06,406 (24.1% saved). Values match exactly.",
+      "expected": 3206406,
+      "actual": 3206406
+    },
+    "test_3_buyer_monthly_trend_purchase_sum": {
+      "status": "PASS",
+      "description": "Monthly trend purchase sum equals stat card Total Purchase Value. Sum=10104094, Total=10104094.",
+      "expected": 10104094,
+      "actual": 10104094
+    },
+    "test_4_buyer_monthly_trend_savings_sum": {
+      "status": "PASS",
+      "description": "Monthly trend savings sum equals stat card Cost Savings. Sum=3206406, Total=3206406.",
+      "expected": 3206406,
+      "actual": 3206406
+    },
+    "test_5_capex_head_total_budget_utilized": {
+      "status": "PASS",
+      "description": "Capex Head API returns total_purchase_value=18270598. Frontend stat card shows ₹1,82,70,598. Values match exactly.",
+      "expected": 18270598,
+      "actual": 18270598
+    },
+    "test_6_capex_head_cost_savings": {
+      "status": "PASS",
+      "description": "Capex Head API returns cost_avoidance=3716885. Frontend stat card shows ₹37,16,885. Values match exactly.",
+      "expected": 3716885,
+      "actual": 3716885
+    },
+    "test_7_buyer_in_progress_count": {
+      "status": "PASS",
+      "description": "In Progress counts only DH-approved but not completed requests. Buyer has 1 request in progress (JAI-P-003 with status=Sample Request). Correctly excludes: Pending DH Approval, Rejected by DH, Rejected, Completed."
+    },
+    "test_8_buyer_analytics_is_buyer_specific": {
+      "status": "PASS",
+      "description": "Backend API /analytics/dashboard returns buyer-specific financial data for buyer role. Verified: Buyer has 6 assigned requests, calculated purchase=10104094 matches API total_purchase_value=10104094."
+    }
+  },
+  "visual_verification": {
+    "buyer_dashboard": {
+      "stats_visible": ["MY ASSIGNED: 6", "COMPLETED: 2", "IN PROGRESS: 1", "TOTAL PURCHASE VALUE: ₹1,01,04,094", "COST SAVINGS: ₹32,06,406 (24.1% saved)"],
+      "pending_tasks_visible": ["PRs Pending: 0", "POs Pending: 0", "CEAs in Approval: 0", "Pending DAPs: 0", "Sample Requested: 0", "PDIs Pending: 0"]
+    },
+    "buyer_analytics": {
+      "stats_visible": ["Total Requests: 10", "Completed: 3", "Total Value: ₹1,01,04,094", "Cost Savings: ₹32,06,406"],
+      "chart_visible": ["Purchase & Savings Trend chart with Mar 26 data", "Total Purchase: ₹1,01,04,094", "Total Savings: ₹32,06,406", "Savings %: 24.1%"]
+    },
+    "capex_head_dashboard": {
+      "stats_visible": ["TOTAL BUDGET UTILIZED: ₹1,82,70,598", "PENDING APPROVALS: 2", "COST SAVINGS: ₹37,16,885", "COMPLETION RATE: 30%"],
+      "sections_visible": ["Department Spend Analysis", "Buyer Performance"]
+    }
+  },
+  "code_verification": {
+    "backend_analytics_location": "server.py lines 1860-2048",
+    "buyer_financial_query": "financial_query = {'assigned_buyer_id': current_user['id']} for buyers",
+    "supplier_selection_logic": "is_ordered=True → selected=True → first supplier (lines 1941-1945)",
+    "monthly_pipeline_uses_same_logic": "lines 1980-2025 use same is_ordered→selected→first priority",
+    "frontend_buyer_stats_location": "Dashboard.jsx lines 960-1033",
+    "frontend_supplier_selection": "orderedSupplier = suppliers.find(s => s.is_ordered) || suppliers.find(s => s.selected) || suppliers[0]"
+  }
+}

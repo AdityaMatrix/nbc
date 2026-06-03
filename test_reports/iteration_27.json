@@ -1,0 +1,103 @@
+{
+  "summary": "Comprehensive testing of CAPEX Portal iteration 27 features: Theme picker restored in Settings page for all users, Admin Dashboard Themes tab, Enhanced User Creation Form with Employee ID/Mobile/conditional Plant/Department/Map to DH fields, User table with new columns, and backend validation for user creation.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_capex_portal_iteration27.py",
+    "/app/test_reports/pytest/pytest_iteration27.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_capex_portal_iteration27.py"
+  ],
+  "success_rate": {
+    "backend": "100% (14/14 tests passed)",
+    "frontend": "100% - All features working"
+  },
+  "test_credentials": {
+    "admin": "admin@capex.com / admin123",
+    "buyer": "vijay@capex.com / buyer123",
+    "user": "amit@capex.com / user123"
+  },
+  "seed_data_creation": "None - used existing data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All iteration 27 features tested and working. Settings page has theme picker restored for all users with checkmark on selected theme. Admin Dashboard has Themes tab for admin theme management. Admin User table shows Emp ID, Mobile, Dept/Plant, Mapped DH columns. Admin Create User form has Email, Name, Employee ID, Mobile, Password, Role fields. When Role=User: Plant, Department, and Map to DH fields appear (all mandatory). When Role=DH: Plant and Department appear (mandatory), NO Map to DH. When Role=Buyer: NO Plant/Department/Map to DH fields. Backend validates: employee_id uniqueness, plant/dept mandatory for user/DH roles, mapped_dh_id mandatory for user role. GET /api/admin/department-heads returns list of DHs for mapping dropdown.",
+  "features_tested": {
+    "settings_page": {
+      "theme_picker_restored": "PASS - Theme picker available for all users",
+      "checkmark_on_selected": "PASS - CheckCircle icon shows on selected theme",
+      "theme_grid": "PASS - 14 theme options displayed in grid"
+    },
+    "admin_dashboard_themes_tab": {
+      "themes_tab_present": "PASS - data-testid='admin-tab-themes' present",
+      "theme_options": "PASS - 14 theme options available",
+      "theme_change": "PASS - Clicking theme applies it"
+    },
+    "admin_user_table": {
+      "emp_id_column": "PASS - Emp ID column present",
+      "mobile_column": "PASS - Mobile column present",
+      "dept_plant_column": "PASS - Dept / Plant column present",
+      "mapped_dh_column": "PASS - Mapped DH column present"
+    },
+    "admin_create_user_form": {
+      "email_field": "PASS - data-testid='user-email-input'",
+      "name_field": "PASS - data-testid='user-name-input'",
+      "employee_id_field": "PASS - data-testid='user-empid-input'",
+      "mobile_field": "PASS - data-testid='user-mobile-input'",
+      "password_field": "PASS - data-testid='user-password-input'",
+      "role_select": "PASS - data-testid='user-role-select'"
+    },
+    "conditional_fields_role_user": {
+      "plant_field": "PASS - data-testid='user-plant-select' appears",
+      "department_field": "PASS - data-testid='user-dept-select' appears",
+      "map_to_dh_field": "PASS - data-testid='user-dh-select' appears",
+      "mandatory_labels": "PASS - Shows 'PLANT & DEPARTMENT (MANDATORY)' and 'MAP TO DEPARTMENT HEAD (MANDATORY)'"
+    },
+    "conditional_fields_role_dh": {
+      "plant_field": "PASS - Plant field appears",
+      "department_field": "PASS - Department field appears",
+      "no_map_to_dh": "PASS - Map to DH field NOT shown for DH role"
+    },
+    "conditional_fields_role_buyer": {
+      "no_plant": "PASS - Plant field NOT shown",
+      "no_department": "PASS - Department field NOT shown",
+      "no_map_to_dh": "PASS - Map to DH field NOT shown"
+    },
+    "admin_edit_user": {
+      "form_opens": "PASS - Edit dialog opens with pre-filled fields",
+      "employee_id_field": "PASS - Employee ID field present",
+      "mobile_field": "PASS - Mobile field present"
+    },
+    "backend_validation": {
+      "user_no_plant_400": "PASS - Returns 400 'Plant and Department are mandatory for User/DH roles'",
+      "user_no_dept_400": "PASS - Returns 400 error",
+      "user_no_dh_400": "PASS - Returns 400 'User must be mapped to a Department Head'",
+      "dh_no_plant_400": "PASS - Returns 400 error",
+      "buyer_no_plant_ok": "PASS - Buyer created without plant/dept",
+      "duplicate_emp_id_400": "PASS - Returns 400 'Employee ID already exists'",
+      "valid_user_created": "PASS - User with all valid fields created successfully"
+    },
+    "department_heads_api": {
+      "get_dhs": "PASS - GET /api/admin/department-heads returns list of DHs",
+      "requires_admin": "PASS - Non-admin blocked with 403"
+    },
+    "login_tests": {
+      "admin_login": "PASS - admin@capex.com/admin123 redirects to /admin",
+      "buyer_login": "PASS - vijay@capex.com/buyer123 redirects to /dashboard",
+      "user_login": "PASS - amit@capex.com/user123 works"
+    }
+  },
+  "mocked_apis": {
+    "has_mocked_apis": false,
+    "mocked_apis_list": []
+  }
+}

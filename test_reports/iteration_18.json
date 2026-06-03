@@ -1,0 +1,101 @@
+{
+  "summary": "Verified Completed/In Progress stat card logic fix for all roles. All 7 features tested and passing. Completed stat now correctly counts ONLY requests where workflow_status === 'Completed'. In Progress stat correctly counts requests where dh_approval_status === 'Approved' AND workflow_status !== 'Completed'. Filter clicks correctly filter the table.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Dashboard",
+        "issues": ["Console warnings about HTML hydration errors - <th>/<td>/<tr> cannot be child of <span>. These are React hydration warnings from the Emergent preview environment but don't affect functionality (pre-existing issue from iteration 13-17)."]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_18.json"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend only test)",
+    "frontend": "100% (all 7 features verified)"
+  },
+  "test_credentials": {
+    "capex_head": "manoj@capex.com / capex123",
+    "buyer": "vijay@capex.com / buyer123",
+    "department_head": "rajesh@capex.com / dh123"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Completed/In Progress stat card logic verified. All roles use workflow_status === 'Completed' for Completed count. In Progress uses dh_approval_status === 'Approved' AND workflow_status !== 'Completed'. Current data has 0 requests with workflow_status='Completed' so all Completed stats show 0.",
+  "test_results": {
+    "test_1_buyer_completed_stat": {
+      "status": "PASS",
+      "description": "Buyer Completed stat shows 0 (correctly counts ONLY workflow_status === 'Completed')",
+      "expected": "0 (no requests have workflow_status='Completed')",
+      "actual": "0"
+    },
+    "test_2_buyer_inprogress_stat": {
+      "status": "PASS",
+      "description": "Buyer In Progress stat shows 2 (correctly counts dh_approval_status === 'Approved' AND workflow_status !== 'Completed')",
+      "expected": "2 DH-approved requests not completed",
+      "actual": "2"
+    },
+    "test_3_buyer_completed_filter": {
+      "status": "PASS",
+      "description": "Clicking Completed stat filters table to show only workflow_status='Completed' requests. Shows 'No requests found' since Completed=0.",
+      "expected": "0 rows (no completed requests)",
+      "actual": "0 rows with 'No requests found' message"
+    },
+    "test_4_buyer_inprogress_filter": {
+      "status": "PASS",
+      "description": "Clicking In Progress stat filters table to show only DH-approved non-completed requests. Shows 2 rows.",
+      "expected": "2 rows",
+      "actual": "2 rows (JAI-RB-010, JAI-RB-007)"
+    },
+    "test_5_capex_head_completion_rate": {
+      "status": "PASS",
+      "description": "Capex Head Completion Rate shows 0% (correctly uses workflow_status === 'Completed' count / total)",
+      "expected": "0% (0 completed out of 9 requests)",
+      "actual": "0% with '0 completed' trend text"
+    },
+    "test_6_dh_completed_stat": {
+      "status": "PASS",
+      "description": "Department Head Completed stat shows 0 (correctly uses workflow_status === 'Completed')",
+      "expected": "0",
+      "actual": "0"
+    },
+    "test_7_dh_inprogress_stat": {
+      "status": "PASS",
+      "description": "Department Head In Progress stat shows 3 (correctly uses dh_approval_status === 'Approved' AND workflow_status !== 'Completed')",
+      "expected": "3 DH-approved requests not completed",
+      "actual": "3"
+    }
+  },
+  "visual_verification": {
+    "buyer_dashboard": {
+      "stats_visible": ["MY ASSIGNED: 5", "COMPLETED: 0", "IN PROGRESS: 2", "TOTAL PURCHASE VALUE: ₹82,09,465", "COST SAVINGS: ₹30,00,200 (26.8% saved)"],
+      "filter_behavior": "Completed filter shows 'No requests found', In Progress filter shows 2 rows"
+    },
+    "department_head_dashboard": {
+      "stats_visible": ["DEPT TOTAL REQUESTS: 5", "COMPLETED: 0", "IN PROGRESS: 3", "PENDING MY APPROVAL: 0"]
+    },
+    "capex_head_dashboard": {
+      "stats_visible": ["TOTAL BUDGET UTILIZED: ₹1,63,75,969", "PENDING APPROVALS: 2", "COST SAVINGS: ₹35,10,679", "COMPLETION RATE: 0%"]
+    }
+  },
+  "code_verification": {
+    "buyer_completed_logic": "Dashboard.jsx line 966: myAssigned.filter(r => r.workflow_status === 'Completed')",
+    "buyer_inprogress_logic": "Dashboard.jsx lines 968-971: myAssigned.filter(r => r.dh_approval_status === 'Approved' && r.workflow_status !== 'Completed')",
+    "buyer_filter_completed": "Dashboard.jsx line 643: matchesBuyerMetric = isMyRequest && request.workflow_status === 'Completed'",
+    "buyer_filter_inprogress": "Dashboard.jsx line 646: matchesBuyerMetric = isMyRequest && request.dh_approval_status === 'Approved' && request.workflow_status !== 'Completed'",
+    "capex_head_completion_rate": "Dashboard.jsx line 883: allRequests.filter(r => r.workflow_status === 'Completed').length / allRequests.length",
+    "dh_completed_logic": "Dashboard.jsx line 933: deptRequests.filter(r => r.workflow_status === 'Completed').length",
+    "dh_inprogress_logic": "Dashboard.jsx line 934: deptRequests.filter(r => r.dh_approval_status === 'Approved' && r.workflow_status !== 'Completed').length"
+  }
+}

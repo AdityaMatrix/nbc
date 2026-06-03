@@ -1,0 +1,65 @@
+{
+  "summary": "Tested the NEW Project Timeline page (separate tab below Analytics), removal of Project Timeline Tracker from Analytics, and the new Project Planning & Timeline section in RequestDetail. All requested features verified working end-to-end.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Dashboard (pre-existing, not related to this iteration)",
+        "issues": ["Console hydration warnings: <span> not a valid child of <tr>/<tbody>/<th>/<td> in DashboardRequestsTable lines 325, 334, 356, 371. Caused by data-ve-dynamic span wrappers being injected inside table semantics. Not a functional bug but pollutes console with React hydration errors on every dashboard load."]
+      },
+      {
+        "screen": "Project Timeline page",
+        "issues": ["Default search by 'PO' substring returned 0 rows during testing because none of the 4 visible projects had 'PO' in PO Number or Project Name; behavior is correct but the dataset is sparse for FY filter tests (FY 2024-25 = 0 rows, Critical priority = 0 rows). Recommend richer seed data for better demo/testing."]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_44.json"
+  ],
+  "action_items": [
+    "(Optional) Fix pre-existing DashboardRequestsTable hydration warnings (<span> inside table). Not blocking, but pollutes console.",
+    "(Optional) Seed more data covering FY 2024-25 and Critical/High priorities so the Project Timeline filters are demonstrable with realistic data."
+  ],
+  "critical_code_review_comments": [
+    "ProjectTimeline.jsx uses date-range new Date(2025,2,31) which becomes April 1 due to month overflow (March has 31 days, this works but new Date(2026,2,31) = March 31 — minor; verify FY end logic). Currently OK because March has 31 days, but if used with February (month index 1) it would overflow.",
+    "ProjectTimeline.jsx fetches axios.get without auth interceptor visibility — works because App.js sets axios.defaults Authorization globally. Confirmed via dashboard navigation that data loads.",
+    "Nav item 'Project Timeline' only shown to buyer/capex_head roles (DashboardLayout.jsx:134). Admin (admin@capex.com) will NOT see this nav entry. If admin should also access, add 'admin' to roles array."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (only manual curl verified — PUT round-trip on JAI-IB-007 persists all 8 new fields)",
+    "frontend": "100%"
+  },
+  "test_credentials": {
+    "buyer": "vijay@capex.com / buyer123"
+  },
+  "seed_data_creation": "None — used existing request JAI-IB-007 which already had all 8 new date/priority fields populated.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Login flow requires Space key press on body before login form appears (handled via page.locator('body').press('Space')). On first login a Tutorial overlay appears that intercepts pointer events — must click 'Skip Tutorial' or navigate via page.goto() to bypass. Test creds: vijay@capex.com/buyer123 (buyer, has access to Project Timeline). Admin (admin@capex.com) does NOT have access to /project-timeline nav (only buyer/capex_head per DashboardLayout.jsx). Existing data: 5 capex-requests, only JAI-IB-007 has new planning fields filled. FY 2024-25 has 0 rows currently.",
+  "features_verified": [
+    "1. Login flow with Space-key gate works correctly - PASS",
+    "2. Nav item 'Project Timeline' appears in sidebar BELOW Analytics for buyer role (Analytics y=134.5, Project Timeline y=166.5) - PASS",
+    "3. /project-timeline route renders with data-testid='project-timeline-page' - PASS",
+    "4. TimelineFilters component renders all required filters: timeline-search, timeline-view, timeline-fy, timeline-plant, timeline-status, timeline-priority, timeline-reset (all data-testids present, count=1 each) - PASS",
+    "5. Legend displays all 5 color codes (Completed/On Track green, In Progress blue, At Risk amber, Delayed red, Not Started grey) plus full stage sequence: 'CEA → PR → PO → Manufacturing → Dispatch → Installation → Commissioning → Closure' - PASS",
+    "6. Summary KPI strip shows 5 cards: TOTAL=4, DELAYED=0, AT RISK=0, IN PROGRESS=2, COMPLETED=0 - PASS",
+    "7. Gantt table renders 4 rows with all required columns: PO No., PROJECT NAME, PLANT, DEPT, SUPPLIER, PR NO., CEA NO., OWNER, VALUE, STAGE, %, DELAY, PRIORITY/STATUS, plus timeline header with month ticks (APR 25, MAY 25, JUN 25 etc.) - PASS",
+    "8. Each row has data-testid='timeline-row-{id}' (4 rows: timeline-row-JAI-IB-007, etc.) - PASS",
+    "9. Timeline bars render in the right column with colored phase segments (visible in screenshot - rows show indigo/blue/violet segments) - PASS",
+    "10. View dropdown switches to Weekly successfully - PASS",
+    "11. Search filter works: typing 'PO' returns 0 rows (correct - no match in test data); reset restores all 4 rows - PASS",
+    "12. Reset button clears search to '' and restores all 4 rows - PASS",
+    "13. FY filter to 'FY 2024-25' filters to 0 rows (correct - no requests in that FY) - PASS",
+    "14. Priority filter 'Critical' returns 0 rows (correct - all test data is 'Medium' or 'High') - PASS",
+    "15. Analytics page (/analytics) no longer contains 'Project Timeline Tracker' card - PASS (verified via body text scrape)",
+    "16. RequestDetail (/requests/JAI-IB-007) renders data-testid='project-planning-section' - PASS",
+    "17. All 8 new input fields present and pre-populated with persisted values: priority-level='High', planned-start-date='2025-01-01', planned-completion-date='2025-12-31', actual-completion-date='2025-12-20', manufacturing-start-date='2025-03-01', manufacturing-end-date='2025-04-30', dispatch-date='2025-05-15', closure-date='2025-12-15' - PASS (confirms PUT round-trip persistence works end-to-end)",
+    "18. Section also displays computed badge 'Completed on time (11d early)' based on planned vs actual dates - bonus UX feature working - PASS"
+  ]
+}

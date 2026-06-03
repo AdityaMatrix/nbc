@@ -1,0 +1,93 @@
+{
+  "summary": "Frontend testing for buyer-specific stats, Today's Tasks, and Capex Head global stats. All 9 features verified and working correctly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Dashboard",
+        "issues": ["Console warnings about HTML hydration errors - <th>/<td>/<tr> cannot be child of <span>. These are React hydration warnings from the Emergent preview environment but don't affect functionality (pre-existing issue from iteration 13-15)."]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_16.json"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend only testing)",
+    "frontend": "100% (9/9 features verified)"
+  },
+  "test_credentials": {
+    "capex_head": "manoj@capex.com / capex123",
+    "buyer": "vijay@capex.com / buyer123"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Buyer stats (My Assigned, Completed, In Progress, Total Purchase Value, Cost Savings) are all buyer-specific using myAssigned filter. Capex Head stats (Total Budget Utilized, Cost Savings) remain global. Today's Tasks shows ALL tasks updated today with color-coded badges.",
+  "test_results": {
+    "test_1_buyer_my_assigned_count": {
+      "status": "PASS",
+      "description": "My Assigned count shows ONLY requests assigned to the logged-in buyer (Vijay). Verified: 6 requests assigned to Vijay, stat card shows '6'. Code uses: allRequests.filter(r => r.assigned_buyer_id === user?.id)"
+    },
+    "test_2_buyer_total_purchase_value": {
+      "status": "PASS",
+      "description": "Total Purchase Value is buyer-specific. Verified: ₹99,80,627 shown for Vijay. Code uses: myAssigned.reduce((sum, r) => sum + (r.final_negotiated_price || 0), 0)"
+    },
+    "test_3_buyer_cost_savings": {
+      "status": "PASS",
+      "description": "Cost Savings is buyer-specific (initial - final offer from buyer's assigned requests). Verified: ₹32,06,406 (24.1% saved) shown for Vijay. Code calculates from myAssigned suppliers' initial_price - final_price."
+    },
+    "test_4_buyer_in_progress_count": {
+      "status": "PASS",
+      "description": "In Progress counts only DH-approved but NOT completed requests. Verified: 1 request in progress for Vijay. Code excludes: Pending DH Approval, Rejected by DH, Rejected, Completed statuses."
+    },
+    "test_5_buyer_completed_count": {
+      "status": "PASS",
+      "description": "Completed counts requests with status=Completed or workflow_status=Completed. Verified: 2 completed requests for Vijay. Code uses: myAssigned.filter(r => r.workflow_status === 'Completed' || r.status === 'Completed')"
+    },
+    "test_6_todays_tasks_no_status_filter": {
+      "status": "PASS",
+      "description": "Today's Tasks shows ALL tasks updated today including completed and rejected ones. Code filters only by updated_at date matching today, no status exclusion. Section only appears when tasks exist for today."
+    },
+    "test_7_todays_tasks_color_coded_badges": {
+      "status": "PASS",
+      "description": "Today's Tasks has color-coded status badges. Code implements getStatusColor(): emerald for completed, red for rejected, blue for approved, amber for pending, violet for processing."
+    },
+    "test_8_capex_head_global_stats": {
+      "status": "PASS",
+      "description": "Capex Head stats remain global (not buyer-filtered). Verified: Total Budget Utilized=₹1,86,61,610, Cost Savings=₹36,13,908. Code uses analytics?.total_purchase_value and analytics?.cost_avoidance from global analytics API."
+    },
+    "test_9_stats_consistency": {
+      "status": "PASS",
+      "description": "Stats are consistent across page navigation. Buyer stats persist correctly when navigating away and back to dashboard."
+    }
+  },
+  "visual_verification": {
+    "buyer_dashboard": {
+      "stats_visible": ["MY ASSIGNED: 6", "COMPLETED: 2", "IN PROGRESS: 1", "TOTAL PURCHASE VALUE: ₹99,80,627", "COST SAVINGS: ₹32,06,406 (24.1% saved)"],
+      "pending_tasks_visible": ["PRs Pending: 0", "POs Pending: 0", "CEAs in Approval: 0", "Pending DAPs: 0", "Sample Requested: 0", "PDIs Pending: 0"],
+      "request_table_statuses": ["Pending DH Approval (amber)", "Completed (slate)", "Rejected by DH (red)", "Sample Request (purple)"]
+    },
+    "capex_head_dashboard": {
+      "stats_visible": ["TOTAL BUDGET UTILIZED: ₹1,86,61,610", "PENDING APPROVALS: 2", "COST SAVINGS: ₹36,13,908", "COMPLETION RATE: 30%"],
+      "sections_visible": ["Department Spend Analysis", "Buyer Performance"]
+    }
+  },
+  "code_verification": {
+    "buyer_stats_location": "Dashboard.jsx lines 960-1033",
+    "buyer_stats_filter": "myAssigned = allRequests.filter(r => r.assigned_buyer_id === user?.id)",
+    "in_progress_logic": "notPending = st !== 'Pending DH Approval' && st !== 'Rejected by DH' && st !== 'Rejected'; notCompleted = ws !== 'Completed' && st !== 'Completed'",
+    "todays_tasks_location": "Dashboard.jsx lines 1235-1294",
+    "todays_tasks_filter": "todaysTasks = myRequests.filter(r => updated.startsWith(today)) - NO status exclusion",
+    "capex_head_stats_location": "Dashboard.jsx lines 876-899",
+    "capex_head_stats_source": "analytics?.total_purchase_value, analytics?.cost_avoidance (global API data)"
+  }
+}

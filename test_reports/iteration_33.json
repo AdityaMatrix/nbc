@@ -1,0 +1,109 @@
+{
+  "summary": "Mobile view and PPT download feature testing completed. All 12 test cases PASSED. Mobile view works correctly with responsive login page, hamburger menu, sidebar drawer, and scrollable content. PPT download endpoint returns 200 with correct content-type. Admin panel works on mobile with wrapping/scrolling tabs.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "/api/auth/login",
+        "issue": "manoj@capex.com password was not matching 'capex123' - had to reset password hash in database",
+        "priority": "LOW",
+        "status": "FIXED"
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Settings > Help tab",
+        "issues": ["PPT download button is in the right column card but the card content area is small - button may require scrolling to see on some viewports"]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_33.json"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Console warnings about HTML hydration errors: '<th> cannot be child of <span>' in Dashboard.jsx table - this is a React hydration warning that should be investigated but doesn't affect functionality"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% (PPT endpoint returns 200 with correct content-type)",
+    "frontend": "100% (12/12 tests passed)"
+  },
+  "test_credentials": {
+    "admin": "admin@capex.com / admin123",
+    "capex_head": "manoj@capex.com / capex123 (password reset during testing)"
+  },
+  "seed_data_creation": "Reset manoj@capex.com password hash to match 'capex123'",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All mobile view and PPT download features verified working: 1) Login page renders correctly on 390x844 mobile viewport with bearing, colorful title, pull cord. 2) Pull cord click reveals login form that stacks below content on mobile. 3) Login works with manoj@capex.com/capex123 and admin@capex.com/admin123. 4) Dashboard shows hamburger menu button (data-testid='mobile-menu-btn') on mobile. 5) Hamburger menu opens Sheet sidebar drawer. 6) Dashboard content is scrollable. 7) Settings page tabs use grid-cols-2 on small screens. 8) PPT download endpoint /api/download/user-manual-ppt returns 200 with application/vnd.openxmlformats-officedocument.presentationml.presentation content-type and 59KB file. 9) Settings > Help tab shows 'User Manual (PPT)' card with download button (data-testid='download-ppt-btn'). 10) Admin panel works on mobile with tabs that wrap (flex-wrap) and scroll (overflow-x-auto). 11) Admin login navigates to /admin. Note: Tutorial modal appears on first login which can block UI interactions - use 'Skip Tutorial' button.",
+  "features_tested": {
+    "mobile_login_page_renders": {
+      "test": "Login page renders correctly on 390x844 viewport",
+      "result": "PASS",
+      "note": "Bearing, colorful title, pull cord all visible"
+    },
+    "mobile_pull_cord_reveals_form": {
+      "test": "Pull cord click reveals login form on mobile",
+      "result": "PASS",
+      "note": "Form stacks below content as expected"
+    },
+    "mobile_login_works": {
+      "test": "Login works on mobile with manoj@capex.com / capex123",
+      "result": "PASS",
+      "note": "Navigates to /dashboard after login"
+    },
+    "mobile_hamburger_menu_visible": {
+      "test": "Dashboard shows hamburger menu button on mobile",
+      "result": "PASS",
+      "selector": "[data-testid='mobile-menu-btn']"
+    },
+    "mobile_hamburger_opens_sidebar": {
+      "test": "Clicking hamburger menu opens sidebar drawer",
+      "result": "PASS",
+      "note": "Sheet component opens with navigation"
+    },
+    "mobile_dashboard_scrollable": {
+      "test": "Dashboard content is scrollable on mobile",
+      "result": "PASS"
+    },
+    "mobile_settings_tabs_usable": {
+      "test": "Settings page tabs are usable on mobile (grid-cols-2)",
+      "result": "PASS",
+      "note": "Tabs use grid layout on small screens"
+    },
+    "desktop_ppt_endpoint_returns_200": {
+      "test": "PPT download endpoint returns 200 with correct content-type",
+      "result": "PASS",
+      "endpoint": "/api/download/user-manual-ppt",
+      "content_type": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "file_size": "59444 bytes"
+    },
+    "desktop_ppt_card_visible": {
+      "test": "Settings > Help tab shows 'User Manual (PPT)' card",
+      "result": "PASS"
+    },
+    "desktop_ppt_download_btn_testid": {
+      "test": "PPT download link has data-testid='download-ppt-btn'",
+      "result": "PASS",
+      "href": "https://capex-portal-3.preview.emergentagent.com/api/download/user-manual-ppt"
+    },
+    "mobile_admin_panel_works": {
+      "test": "Admin panel works on mobile viewport",
+      "result": "PASS",
+      "note": "Tabs wrap (flex-wrap) and scroll (overflow-x-auto)"
+    },
+    "desktop_admin_login_navigates": {
+      "test": "Login with admin@capex.com / admin123 navigates to /admin",
+      "result": "PASS"
+    }
+  },
+  "mocked_apis": {
+    "has_mocked_apis": false,
+    "mocked_apis_list": []
+  }
+}

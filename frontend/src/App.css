@@ -1,0 +1,200 @@
+/* Corporate Capex Portal - Compact & Energetic Design */
+
+/* Base layout */
+.app-shell {
+  @apply flex h-screen overflow-hidden;
+}
+
+.main-content {
+  @apply flex-1 flex flex-col overflow-y-auto;
+}
+
+/* Compact metric cards */
+.metric-card {
+  @apply bg-gradient-to-br from-white to-slate-50/50 rounded-lg border border-slate-200/60 transition-all duration-200;
+}
+
+.metric-card:hover {
+  @apply shadow-md border-slate-300/60;
+}
+
+/* Compact data table */
+.data-table {
+  @apply w-full border-collapse;
+}
+
+.data-table th {
+  @apply text-left text-[10px] font-semibold text-slate-500 uppercase tracking-wider py-2 px-3 bg-slate-50/80 border-b border-slate-200;
+}
+
+.data-table td {
+  @apply py-2.5 px-3 border-b border-slate-100 text-xs;
+}
+
+.data-table tbody tr {
+  @apply transition-colors duration-150;
+}
+
+.data-table tbody tr:hover {
+  @apply bg-slate-50/50;
+}
+
+/* Request cards - Compact */
+.request-card {
+  @apply bg-white rounded-lg border border-slate-200/60 p-3 transition-all duration-200 cursor-pointer;
+}
+
+.request-card:hover {
+  @apply shadow-md border-indigo-200 -translate-y-0.5;
+}
+
+/* Timeline - Compact */
+.timeline-item {
+  @apply relative pl-6 pb-4 border-l border-slate-200 last:border-0;
+}
+
+.timeline-dot {
+  @apply absolute left-[-5px] w-2.5 h-2.5 rounded-full bg-white border-2 border-slate-300;
+}
+
+.timeline-dot.active {
+  @apply border-indigo-500 bg-indigo-500;
+}
+
+/* Loading spinner */
+.spinner {
+  @apply animate-spin rounded-full border-2 border-slate-200 border-t-indigo-600;
+}
+
+/* Empty state - Compact */
+.empty-state {
+  @apply flex flex-col items-center justify-center py-12 text-center;
+}
+
+/* Chart container */
+.chart-container {
+  @apply bg-white rounded-lg border border-slate-200/60 p-3;
+}
+
+/* Tab navigation - Compact */
+.tab-nav {
+  @apply flex border-b border-slate-200;
+}
+
+.tab-item {
+  @apply px-4 py-2 text-xs font-medium text-slate-500 border-b-2 border-transparent transition-colors duration-200;
+}
+
+.tab-item:hover {
+  @apply text-slate-700;
+}
+
+.tab-item.active {
+  @apply text-indigo-600 border-indigo-600;
+}
+
+/* Attachment items - Compact */
+.attachment-item {
+  @apply flex items-center gap-2 p-2 bg-slate-50 rounded-lg border border-slate-200;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400;
+}
+
+/* Animations */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.2s ease-out;
+}
+
+/* Focus rings - Corporate blue */
+input:focus, select:focus, textarea:focus, button:focus-visible {
+  @apply outline-none ring-2 ring-indigo-500/20 ring-offset-1;
+}
+
+/* Glassmorphism effects */
+.glass {
+  @apply bg-white/80 backdrop-blur-lg border border-white/20;
+}
+
+.glass-dark {
+  @apply bg-slate-900/80 backdrop-blur-lg border border-white/10;
+}
+
+/* Gradient text */
+.gradient-text {
+  @apply bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent;
+}
+
+/* Status pulse animation */
+.pulse-status {
+  @apply relative;
+}
+
+.pulse-status::before {
+  content: '';
+  @apply absolute inset-0 rounded-full animate-ping opacity-75;
+}
+
+/* Corporate shadows */
+.shadow-corporate {
+  box-shadow: 0 4px 20px -4px rgba(99, 102, 241, 0.15);
+}
+
+/* Input styling - Compact */
+input, textarea, select {
+  @apply text-xs;
+}
+
+/* Button sizing - Compact */
+.btn-compact {
+  @apply h-7 px-3 text-xs;
+}
+
+/* Card headers - Compact */
+.card-header-compact {
+  @apply py-2 px-3;
+}
+
+/* Badge styling - Compact */
+.badge-compact {
+  @apply text-[9px] px-1.5 py-0.5 font-medium;
+}
+
+/* Page transition - fade in for dashboard */
+@keyframes dashboard-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.dashboard-layout-enter {
+  animation: dashboard-enter 0.5s ease-out;
+}
+

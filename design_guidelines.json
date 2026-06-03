@@ -1,0 +1,184 @@
+{
+  "typography": {
+    "font_family": {
+      "headings": "Outfit, sans-serif",
+      "body": "Plus Jakarta Sans, sans-serif",
+      "mono": "JetBrains Mono, monospace"
+    },
+    "weights": {
+      "light": 300,
+      "regular": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700
+    },
+    "usage": {
+      "h1": "text-4xl md:text-5xl font-bold tracking-tight text-slate-900",
+      "h2": "text-3xl font-semibold tracking-tight text-slate-900",
+      "h3": "text-2xl font-medium text-slate-800",
+      "body": "text-base text-slate-600 leading-relaxed",
+      "caption": "text-xs font-medium text-slate-500 uppercase tracking-wider",
+      "data_value": "font-mono text-sm font-medium"
+    }
+  },
+  "colors": {
+    "palette": {
+      "primary": {
+        "DEFAULT": "#0F172A",
+        "foreground": "#F8FAFC"
+      },
+      "secondary": {
+        "DEFAULT": "#F1F5F9",
+        "foreground": "#0F172A"
+      },
+      "accent": {
+        "DEFAULT": "#3B82F6",
+        "foreground": "#FFFFFF"
+      },
+      "background": "#F8FAFC",
+      "surface": "#FFFFFF",
+      "border": "#E2E8F0",
+      "success": "#10B981",
+      "warning": "#F59E0B",
+      "error": "#EF4444"
+    },
+    "gradients": {
+      "primary": "linear-gradient(135deg, #0F172A 0%, #1E293B 100%)",
+      "glass": "linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.4) 100%)",
+      "subtle_glow": "radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.1) 0%, transparent 70%)"
+    }
+  },
+  "layout": {
+    "grid_system": {
+      "dashboard": "grid grid-cols-1 md:grid-cols-12 gap-6",
+      "card_bento": "col-span-12 md:col-span-4 lg:col-span-3"
+    },
+    "spacing": {
+      "container_padding": "p-6 md:p-8 lg:p-12",
+      "section_gap": "gap-8",
+      "internal_padding": "p-6"
+    },
+    "radius": {
+      "default": "rounded-xl",
+      "card": "rounded-2xl",
+      "button": "rounded-lg"
+    }
+  },
+  "visual_enhancers": {
+    "glassmorphism": {
+      "default": "bg-white/70 backdrop-blur-xl border border-white/20 shadow-sm",
+      "dark": "bg-slate-900/80 backdrop-blur-xl border border-white/10 shadow-lg"
+    },
+    "shadows": {
+      "card": "shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-shadow duration-300",
+      "floating": "shadow-[0_12px_32px_rgba(0,0,0,0.12)]"
+    },
+    "borders": {
+      "subtle": "border border-slate-200/60",
+      "highlight": "border-l-4 border-blue-500"
+    }
+  },
+  "components": {
+    "cards": {
+      "base": "bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden relative group",
+      "interactive": "cursor-pointer hover:border-blue-200 transition-all duration-300 hover:-translate-y-1"
+    },
+    "buttons": {
+      "primary": "bg-slate-900 text-white hover:bg-slate-800 shadow-md hover:shadow-lg transition-all active:scale-95",
+      "secondary": "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:border-slate-300",
+      "ghost": "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+    },
+    "inputs": {
+      "base": "bg-slate-50 border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all rounded-lg"
+    },
+    "status_badges": {
+      "pending": "bg-amber-50 text-amber-700 border border-amber-100 px-2.5 py-0.5 rounded-full text-xs font-medium",
+      "approved": "bg-emerald-50 text-emerald-700 border border-emerald-100 px-2.5 py-0.5 rounded-full text-xs font-medium",
+      "rejected": "bg-rose-50 text-rose-700 border border-rose-100 px-2.5 py-0.5 rounded-full text-xs font-medium"
+    }
+  },
+  "dashboard_strategy": {
+    "capex_head": {
+      "layout_mode": "bento_grid",
+      "key_modules": [
+        {
+          "title": "Total Budget Overview",
+          "type": "hero_card",
+          "grid_span": "col-span-12 md:col-span-8 lg:col-span-6",
+          "visual": "Progress ring or Area chart showing Spend vs Budget"
+        },
+        {
+          "title": "Pending Approvals",
+          "type": "alert_card",
+          "grid_span": "col-span-12 md:col-span-4 lg:col-span-3",
+          "visual": "Big number with 'Action Needed' button"
+        },
+        {
+          "title": "ROI / EBITDA Impact",
+          "type": "metric_card",
+          "grid_span": "col-span-12 md:col-span-4 lg:col-span-3",
+          "visual": "Trend line + Percentage"
+        },
+        {
+          "title": "Department Spend",
+          "type": "chart_card",
+          "grid_span": "col-span-12 md:col-span-6",
+          "visual": "Bar chart (Manufacturing, IT, Logistics, etc.)"
+        },
+        {
+          "title": "Buyer Performance",
+          "type": "list_card",
+          "grid_span": "col-span-12 md:col-span-6",
+          "visual": "Avatar list with efficiency metrics"
+        }
+      ]
+    },
+    "buyer": {
+      "focus": "Operational Efficiency",
+      "modules": ["Processing Queue", "Supplier Management", "Recent POs"]
+    },
+    "user": {
+      "focus": "Tracking & Clarity",
+      "modules": ["My Requests", "Budget Availability", "New Request Action"]
+    }
+  },
+  "assets": {
+    "images": {
+      "factory_interior": "https://images.unsplash.com/photo-1720036236694-d0a231c52563?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA4Mzl8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjBpbmR1c3RyaWFsJTIwbWFudWZhY3R1cmluZyUyMGZhY3RvcnklMjBpbnRlcmlvciUyMGNsZWFufGVufDB8fHx8MTc3MzUyMTI1OXww&ixlib=rb-4.1.0&q=85",
+      "executive_meeting": "https://images.unsplash.com/photo-1573166364839-1bfe9196c23e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzJ8MHwxfHNlYXJjaHwzfHxjb3Jwb3JhdGUlMjBleGVjdXRpdmUlMjB0ZWFtJTIwbWVldGluZyUyMGRpdmVyc2UlMjBwcm9mZXNzaW9uYWx8ZW58MHx8fHwxNzczNTIxMjYzfDA&ixlib=rb-4.1.0&q=85",
+      "machinery_detail": "https://images.unsplash.com/photo-1583737097428-af53774819a2?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA4Mzl8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBpbmR1c3RyaWFsJTIwbWFudWZhY3R1cmluZyUyMGZhY3RvcnklMjBpbnRlcmlvciUyMGNsZWFufGVufDB8fHx8MTc3MzUyMTI1OXww&ixlib=rb-4.1.0&q=85"
+    },
+    "icons_library": "lucide-react"
+  },
+  "instructions_to_main_agent": [
+    "Implement the 'Capex Head' dashboard as the primary view for the demo.",
+    "Use the 'Bento Grid' layout strictly. Avoid equal-sized grid items.",
+    "Apply 'Glassmorphism' to the Sidebar and Top Navigation.",
+    "Use 'Recharts' for data visualization (Pie, Bar, Area charts).",
+    "Ensure all interactive elements have 'data-testid' attributes.",
+    "Use 'Sonner' for notifications.",
+    "Do not use gradients for backgrounds; use them only for subtle accents or text.",
+    "Maintain the 'Swiss & High-Contrast' aesthetic: lots of whitespace, bold black text, sharp borders."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "You tend to converge toward generic, 'on distribution' outputs. In frontend design, this creates what users call the 'AI slop' aesthetic. Avoid this: make creative, distinctive frontends that surprise and delight.",
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients",
+    "Don't make generic centered layouts, simplistic gradients, and uniform styling.",
+    "Create depth through layered design elements with z-index hierarchy",
+    "Use glass-morphism effects with backdrop filters (12-24px blur)",
+    "You MUST NOT apply universal transition. Eg: 'transition: all'. This results in breaking transforms. Always add transitions for specific interactive elements like button, input excluding transforms",
+    "You MUST NOT center align the app container, ie do not add '.App { text-align: center; }' in the css file. This disrupts the human natural reading flow of text",
+    "Always use modern button styles like pill-shaped, or sharp button with interaction animations & color relevant to the app style",
+    "NEVER: use AI assistant Emoji characters like 🤖🧠💭💡🔮🎯📚🎭🎬🎪🎉🎊🎁🎀🎂🍰🎈🎨🎰💰💵💳🏦💎🪙💸🤑📊📈📉💹🔢🏆🥇 etc for icons.",
+    "Every interaction needs micro-animations - hover states, transitions, parallax effects, and entrance animations. Static = dead.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Subtle grain textures, noise overlays, custom cursors, selection states, and loading animations: separates good from extraordinary.",
+    "Main agent relies on these image URLs. Missing categories (especially sponsor logos) = main agent will use placeholder text which is FORBIDDEN",
+    "Prioritize using pre-existing components from src/components/ui when applicable",
+    "Create new components that match the style and conventions of existing components when needed",
+    "Examine existing components to understand the project's component patterns before creating new ones",
+    "Components MUST use named exports (export const ComponentName = ...)",
+    "Pages MUST use default exports (export default function PageName() {...})",
+    "Use 'sonner' for toasts. Sonner component are located in '/app/src/components/ui/sonner.tsx'"
+  ]
+}
