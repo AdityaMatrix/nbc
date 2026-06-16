@@ -1,0 +1,65 @@
+# Core web framework
+fastapi
+uvicorn[standard]
+starlette
+python-multipart
+
+# Database
+motor
+pymongo
+dnspython
+
+# Auth
+bcrypt
+passlib
+python-jose[cryptography]
+PyJWT
+cryptography
+
+# Config
+python-dotenv
+
+# Data processing
+pandas
+numpy
+openpyxl
+xlsxwriter
+python-pptx
+pillow
+lxml
+
+# HTTP clients
+requests
+httpx
+aiohttp
+
+# AI/LLM (optional)
+openai
+google-generativeai
+google-genai
+litellm
+tiktoken
+
+# Validation
+pydantic
+email-validator
+jsonschema
+
+# AWS
+boto3
+
+# Email
+resend
+
+# Templating
+Jinja2
+
+# Other utilities
+python-dateutil
+PyYAML
+tqdm
+tenacity
+regex
+
+# Payments
+stripe

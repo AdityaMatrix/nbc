@@ -198,3 +198,52 @@ input, textarea, select {
   animation: dashboard-enter 0.5s ease-out;
 }
 
+/* ============================================
+   Lovable Redesign - Design Tokens
+   ============================================ */
+:root {
+  --surface: #f8fafc;
+  --panel: #ffffff;
+  --brand: #0d9668;
+  --brand-foreground: #f8fafc;
+  --brand-soft: #ecfdf5;
+  --warn: #d97706;
+  --danger: #dc2626;
+  --hairline: rgba(0, 0, 0, 0.06);
+  --font-mono-numeric: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Tabular nums for data-heavy components */
+.tabular {
+  font-family: var(--font-mono-numeric);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Slide-in animation for drawers */
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+.animate-slide-in {
+  animation: slide-in-right 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Lovable panel/ring utility */
+.ring-hairline {
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+
+/* Lovable brand color utilities */
+.bg-brand { background-color: var(--brand); }
+.bg-brand-soft { background-color: var(--brand-soft); }
+.bg-brand-foreground { background-color: var(--brand-foreground); }
+.text-brand { color: var(--brand); }
+.text-brand-foreground { color: var(--brand-foreground); }
+.bg-panel { background-color: var(--panel); }
+.bg-surface { background-color: var(--surface); }
+.text-warn { color: var(--warn); }
+.text-danger { color: var(--danger); }
+.bg-danger\/10 { background-color: rgba(220, 38, 38, 0.1); }
+.bg-warn\/10 { background-color: rgba(217, 119, 6, 0.1); }
+.border-hairline { border-color: var(--hairline); }
+

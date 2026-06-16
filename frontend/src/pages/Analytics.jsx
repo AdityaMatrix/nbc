@@ -4,13 +4,13 @@ import axios from "axios";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import * as XLSX from 'xlsx';
-import { TrendingUp, AlertTriangle, Building2, Users } from "lucide-react";
 
-import { AnalyticsFilters } from "@/components/analytics/AnalyticsFilters";
-import { AnalyticsKPIs } from "@/components/analytics/AnalyticsKPIs";
-import { SpendAnalytics } from "@/components/analytics/SpendAnalytics";
-import { SupplierAnalytics } from "@/components/analytics/SupplierAnalytics";
-import { SmartInsights } from "@/components/analytics/SmartInsights";
+import { FiltersBar } from "@/components/analytics-new/FiltersBar";
+import { KpiCards } from "@/components/analytics-new/KpiCards";
+import { PlantSpendChart } from "@/components/analytics-new/PlantSpendChart";
+import { DepartmentChart } from "@/components/analytics-new/DepartmentChart";
+import { SupplierTable } from "@/components/analytics-new/SupplierTable";
+import { AiInsightsBar } from "@/components/analytics-new/AiInsightsBar";
 
 const FY_RANGES = {
   "2024-25": { start: new Date(2024, 3, 1), end: new Date(2025, 2, 31, 23, 59, 59) },
@@ -29,7 +29,7 @@ const getSpend = (r) => {
 };
 
 const formatCurrency = (v) => {
-  if (!v) return "\u20B90";
+  if (!v) return "₹0";
   return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(v);
 };
 
@@ -52,7 +52,6 @@ export default function Analytics() {
   const [poSearch, setPoSearch] = useState("");
 
   // AI
-  const [aiQuery, setAiQuery] = useState("");
   const [aiInsight, setAiInsight] = useState("");
   const [isAiLoading, setIsAiLoading] = useState(false);
 
@@ -115,7 +114,6 @@ export default function Analytics() {
     let totalSpend = 0;
     const suppliers = new Set();
     let poProcessingDays = [];
-
     data.forEach(r => {
       const s = getSpend(r);
       totalSpend += s.final;
@@ -124,29 +122,18 @@ export default function Analytics() {
       const days = calcDays(r.po_created_date, r.po_approved_date);
       if (days !== null) poProcessingDays.push(days);
     });
-
     const now = new Date();
-    // Delayed: PO issued and either (a) actual delivery exists AND exceeds expected, or (b) no delivery AND expected date has passed, or (c) no expected date & 60d+ since PO
     const delayed = data.filter(r => {
       if (r.workflow_status === "Completed") return false;
       if (!r.po_number) return false;
-      if (r.delivery_date && r.expected_delivery_date) {
-        return new Date(r.delivery_date) > new Date(r.expected_delivery_date);
-      }
-      if (!r.delivery_date && r.expected_delivery_date) {
-        return now > new Date(r.expected_delivery_date);
-      }
-      // fallback: 60d+ since PO with no delivery
-      if (!r.delivery_date && r.po_approved_date) {
-        return Math.floor((now - new Date(r.po_approved_date)) / (1000 * 60 * 60 * 24)) > 60;
-      }
+      if (r.delivery_date && r.expected_delivery_date) return new Date(r.delivery_date) > new Date(r.expected_delivery_date);
+      if (!r.delivery_date && r.expected_delivery_date) return now > new Date(r.expected_delivery_date);
+      if (!r.delivery_date && r.po_approved_date) return Math.floor((now - new Date(r.po_approved_date)) / (1000 * 60 * 60 * 24)) > 60;
       return false;
     }).length;
-
     const active = data.filter(r => r.workflow_status !== "Completed" && r.status !== "Rejected" && r.status !== "Rejected by DH").length;
     const completed = data.filter(r => r.workflow_status === "Completed").length;
     const avgPo = poProcessingDays.length > 0 ? Math.round(poProcessingDays.reduce((a, b) => a + b, 0) / poProcessingDays.length) : null;
-
     return { totalSpend, activeProjects: active, delayedProjects: delayed, completedProjects: completed, totalSuppliers: suppliers.size, avgPoProcessing: avgPo };
   };
 
@@ -185,11 +172,8 @@ export default function Analytics() {
   const supplierData = useMemo(() => {
     const map = {};
     filtered.forEach(r => {
-      // Determine on-time status for this request (only relevant if both expected & actual exist)
       const isOnTime = (r.expected_delivery_date && r.delivery_date)
-        ? new Date(r.delivery_date) <= new Date(r.expected_delivery_date)
-        : null;
-
+        ? new Date(r.delivery_date) <= new Date(r.expected_delivery_date) : null;
       if (r.suppliers?.length > 0) {
         r.suppliers.forEach(s => {
           const name = s.name || "Unknown";
@@ -197,10 +181,7 @@ export default function Analytics() {
           map[name].spend += parseFloat(s.final_price || 0);
           map[name].initial += parseFloat(s.initial_price || 0);
           if (s.is_ordered) map[name].orders += 1;
-          if (s.is_ordered && isOnTime !== null) {
-            map[name].totalDeliveries += 1;
-            if (isOnTime) map[name].ontimeCount += 1;
-          }
+          if (s.is_ordered && isOnTime !== null) { map[name].totalDeliveries += 1; if (isOnTime) map[name].ontimeCount += 1; }
         });
       } else if (r.vendor_name) {
         const name = r.vendor_name;
@@ -209,66 +190,14 @@ export default function Analytics() {
         map[name].spend += s.final;
         map[name].initial += s.initial;
         map[name].orders += 1;
-        if (isOnTime !== null) {
-          map[name].totalDeliveries += 1;
-          if (isOnTime) map[name].ontimeCount += 1;
-        }
+        if (isOnTime !== null) { map[name].totalDeliveries += 1; if (isOnTime) map[name].ontimeCount += 1; }
       }
     });
     return Object.values(map)
       .filter(s => s.spend > 0)
-      .map(s => ({
-        ...s,
-        ontimePercent: s.totalDeliveries > 0 ? Math.round((s.ontimeCount / s.totalDeliveries) * 100) : null,
-      }))
+      .map(s => ({ ...s, ontimePercent: s.totalDeliveries > 0 ? Math.round((s.ontimeCount / s.totalDeliveries) * 100) : null }))
       .sort((a, b) => b.spend - a.spend);
   }, [filtered]);
-
-  // Smart insights
-  const insights = useMemo(() => {
-    const result = [];
-    if (plantData.length > 0) {
-      result.push({
-        icon: Building2, title: "Highest Spending Plant",
-        description: `${plantData[0].name} leads with ${formatCurrency(plantData[0].spend)} across ${plantData[0].count} requests`,
-        bgColor: "bg-violet-50", borderColor: "border-violet-100", iconBg: "bg-violet-100", iconColor: "text-violet-600",
-        badge: plantData[0].name, badgeColor: "bg-violet-100 text-violet-700"
-      });
-    }
-    if (kpis.delayedProjects > 0) {
-      result.push({
-        icon: AlertTriangle, title: "Projects at Risk",
-        description: `${kpis.delayedProjects} project(s) have PO issued but no delivery after 60+ days`,
-        bgColor: "bg-red-50", borderColor: "border-red-100", iconBg: "bg-red-100", iconColor: "text-red-600",
-        badge: `${kpis.delayedProjects} delayed`, badgeColor: "bg-red-100 text-red-700"
-      });
-    }
-    if (supplierData.length > 0) {
-      const topSupplier = supplierData[0];
-      const savings = Math.max(0, topSupplier.initial - topSupplier.spend);
-      if (savings > 0) {
-        result.push({
-          icon: TrendingUp, title: "Top Supplier Savings",
-          description: `${topSupplier.name} achieved ${formatCurrency(savings)} in cost savings through negotiations`,
-          bgColor: "bg-emerald-50", borderColor: "border-emerald-100", iconBg: "bg-emerald-100", iconColor: "text-emerald-600",
-          badge: formatCurrency(savings), badgeColor: "bg-emerald-100 text-emerald-700"
-        });
-      }
-    }
-    if (deptData.length > 1) {
-      result.push({
-        icon: Users, title: "Department Activity",
-        description: `${deptData.length} departments active this FY. ${deptData[0].name} leads spending with ${deptData[0].count} requests`,
-        bgColor: "bg-blue-50", borderColor: "border-blue-100", iconBg: "bg-blue-100", iconColor: "text-blue-600",
-      });
-    }
-    return result;
-  }, [plantData, deptData, supplierData, kpis]);
-
-  // Reset filters
-  const resetFilters = () => {
-    setPlantFilter("all"); setDeptFilter("all"); setSupplierFilter("all"); setPoSearch("");
-  };
 
   // Export
   const handleExport = () => {
@@ -281,7 +210,6 @@ export default function Analytics() {
       "Created": r.created_at?.split("T")[0] || "",
     }));
     XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(reqData), "Requests");
-
     const suppData = supplierData.map(s => ({
       "Supplier": s.name, "Total Spend": s.spend, "Initial Quote": s.initial,
       "Savings": Math.max(0, s.initial - s.spend), "POs": s.orders,
@@ -292,11 +220,10 @@ export default function Analytics() {
   };
 
   // AI
-  const handleAiSubmit = async () => {
-    if (!aiQuery.trim()) return;
+  const handleAiSubmit = async (query) => {
     setIsAiLoading(true);
     try {
-      const res = await axios.post(`${API}/ai/insights`, { query: aiQuery });
+      const res = await axios.post(`${API}/ai/insights`, { query });
       setAiInsight(res.data.insight);
     } catch (e) { toast.error("Failed to get AI insight"); }
     finally { setIsAiLoading(false); }
@@ -313,46 +240,40 @@ export default function Analytics() {
   }
 
   return (
-    <div className="space-y-4" data-testid="analytics">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold text-slate-800">Analytics</h1>
-          <p className="text-xs text-slate-500">Financial performance & project insights</p>
-        </div>
-      </div>
-
+    <div className="space-y-0" data-testid="analytics" style={{ margin: "-0.5rem -0.5rem 0 -0.5rem" }}>
       {/* Sticky Filters */}
-      <AnalyticsFilters
+      <FiltersBar
         selectedFY={selectedFY} setSelectedFY={setSelectedFY}
         timeGranularity={timeGranularity} setTimeGranularity={setTimeGranularity}
         plantFilter={plantFilter} setPlantFilter={setPlantFilter} uniquePlants={uniquePlants}
         deptFilter={deptFilter} setDeptFilter={setDeptFilter} uniqueDepts={uniqueDepts}
         supplierFilter={supplierFilter} setSupplierFilter={setSupplierFilter} uniqueSuppliers={uniqueSuppliers}
         poSearch={poSearch} setPoSearch={setPoSearch}
-        onReset={resetFilters} onExport={handleExport}
+        onExport={handleExport}
       />
 
-      {/* KPIs */}
-      <AnalyticsKPIs kpis={kpis} prevKpis={prevKpis} formatCurrency={formatCurrency} />
+      <div className="px-4 md:px-6 py-6 space-y-6 max-w-[1600px] w-full mx-auto">
+        {/* Header */}
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight text-slate-800">Analytics</h1>
+          <p className="text-sm text-slate-500">Financial performance & project insights</p>
+        </div>
 
-      {/* Spend: Plant + Department */}
-      <SpendAnalytics
-        plantData={plantData} deptData={deptData}
-        plantFilter={plantFilter} setPlantFilter={setPlantFilter}
-        formatCurrency={formatCurrency} selectedFY={selectedFY}
-      />
+        {/* KPIs */}
+        <KpiCards kpis={kpis} prevKpis={prevKpis} formatCurrency={formatCurrency} />
 
-      {/* Supplier Analytics */}
-      <SupplierAnalytics supplierData={supplierData} formatCurrency={formatCurrency} />
+        {/* Spend: Plant + Department */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <PlantSpendChart data={plantData} />
+          <DepartmentChart data={deptData} />
+        </div>
 
-      {/* Smart Insights */}
-      <SmartInsights
-        insights={insights}
-        aiQuery={aiQuery} setAiQuery={setAiQuery}
-        aiInsight={aiInsight} isAiLoading={isAiLoading}
-        onAiSubmit={handleAiSubmit}
-      />
+        {/* Supplier Analytics */}
+        <SupplierTable rows={supplierData} />
+
+        {/* AI Insights */}
+        <AiInsightsBar onSubmit={handleAiSubmit} isLoading={isAiLoading} insight={aiInsight} />
+      </div>
     </div>
   );
 }
