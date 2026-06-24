@@ -262,3 +262,13 @@ class AIChatMessage(BaseModel):
 class AIChatResponse(BaseModel):
     response: str
     session_id: str
+
+class ProjectGroupCreate(BaseModel):
+    name: str
+    description: Optional[str] = None
+    project_ids: List[str] = []
+
+class ProjectGroupUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    project_ids: Optional[List[str]] = None

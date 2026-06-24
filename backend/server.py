@@ -1,5 +1,8 @@
+# pyrefly: ignore [missing-import]
 from fastapi import FastAPI
+# pyrefly: ignore [missing-import]
 from fastapi.staticfiles import StaticFiles
+# pyrefly: ignore [missing-import]
 from fastapi.responses import FileResponse
 from starlette.middleware.cors import CORSMiddleware
 from datetime import datetime, timezone
@@ -28,6 +31,7 @@ from routes.seed import router as seed_router
 from routes.bulk_upload import router as bulk_upload_router
 from routes.admin import router as admin_router
 from routes.access_control import router as access_control_router
+from routes.groups import router as groups_router
 
 app.include_router(auth_router)
 app.include_router(users_router)
@@ -45,6 +49,7 @@ app.include_router(vendors_router)
 app.include_router(seed_router)
 app.include_router(admin_router)
 app.include_router(access_control_router)
+app.include_router(groups_router)
 
 # Health check
 @app.get("/api/health")
@@ -90,10 +95,11 @@ async def user_manual_status():
     }
 
 # CORS middleware
+_default_origins = "http://localhost:3000,http://127.0.0.1:3000"
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=os.environ.get('CORS_ORIGINS', _default_origins).split(','),
     allow_methods=["*"],
     allow_headers=["*"],
 )

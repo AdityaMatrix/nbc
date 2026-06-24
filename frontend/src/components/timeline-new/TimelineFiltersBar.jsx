@@ -15,9 +15,10 @@ function Select({ value, options, onChange, allLabel }) {
   );
 }
 
-export function TimelineFiltersBar({ filters, onChange, onReset, uniquePlants }) {
+export function TimelineFiltersBar({ filters, onChange, onReset, uniquePlants, fy, onFyChange }) {
   const STATUSES = ["Completed", "On Track", "In Progress", "At Risk", "Delayed", "Not Started"];
   const PRIORITIES = ["High", "Medium", "Low"];
+  const FY_OPTIONS = ["2024-25", "2025-26", "2026-27"];
 
   return (
     <header className="sticky top-0 z-20 bg-white/85 backdrop-blur-md border-b" style={{ borderColor: "var(--hairline)" }}>
@@ -37,6 +38,9 @@ export function TimelineFiltersBar({ filters, onChange, onReset, uniquePlants })
           <Filter className="w-4 h-4" />
         </div>
 
+        {fy && onFyChange && (
+          <Select value={fy} options={FY_OPTIONS} onChange={onFyChange} allLabel="All FY" />
+        )}
         <Select value={filters.plant} options={uniquePlants || []} onChange={(v) => onChange({ plant: v })} allLabel="All Plants" />
         <Select value={filters.status} options={STATUSES} onChange={(v) => onChange({ status: v })} allLabel="All Status" />
         <Select value={filters.priority} options={PRIORITIES} onChange={(v) => onChange({ priority: v })} allLabel="All Priority" />

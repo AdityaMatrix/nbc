@@ -1,8 +1,9 @@
-import { useState, useEffect, useMemo } from "react";
-import { API } from "@/App";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { API, useAuth } from "@/App";
 import axios from "axios";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Activity, Table2, GanttChartSquare, GitCompareArrows } from "lucide-react";
+import { Activity, Table2, GanttChartSquare, GitCompareArrows, FolderPlus } from "lucide-react";
+import { toast } from "sonner";
 
 import { TimelineFiltersBar } from "@/components/timeline-new/TimelineFiltersBar";
 import { TimelineKpiCards } from "@/components/timeline-new/TimelineKpiCards";
@@ -11,6 +12,7 @@ import { TimelineTable } from "@/components/timeline-new/TimelineTable";
 import { GanttChart } from "@/components/timeline-new/GanttChart";
 import { ProjectDetailDrawer } from "@/components/timeline-new/ProjectDetailDrawer";
 import { CompareDrawer } from "@/components/timeline-new/CompareDrawer";
+import { GroupManager } from "@/components/timeline-new/GroupManager";
 import { STAGES, addDays } from "@/lib/capexHelpers";
 
 const FY_RANGES = {
@@ -121,14 +123,22 @@ function buildSteps(r) {
 }
 
 export default function ProjectTimeline() {
+  const { user } = useAuth();
   const [allRequests, setAllRequests] = useState([]);
+  const [allGroups, setAllGroups] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Filters
   const [filters, setFilters] = useState({
     search: "", plant: "all", status: "all", priority: "all",
   });
-  const [fy, setFy] = useState("2025-26");
+  // Auto-detect current FY: if month >= April (3), current FY starts this year, else last year
+  const currentFy = (() => {
+    const now = new Date();
+    const year = now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1;
+    return `${year}-${String(year + 1).slice(-2)}`;
+  })();
+  const [fy, setFy] = useState(currentFy);
 
   // View mode & interactions
   const [viewMode, setViewMode] = useState("table");
@@ -136,9 +146,16 @@ export default function ProjectTimeline() {
   const [compareIds, setCompareIds] = useState(new Set());
   const [compareOpen, setCompareOpen] = useState(false);
 
+  // Group management
+  const [groupModalOpen, setGroupModalOpen] = useState(false);
+  const [editingGroup, setEditingGroup] = useState(null);
+
+  const canManageGroups = user?.role === "buyer" || user?.role === "capex_head";
+
   const onChange = (patch) => setFilters((f) => ({ ...f, ...patch }));
   const resetFilters = () => setFilters({ search: "", plant: "all", status: "all", priority: "all" });
 
+  // Fetch requests
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -149,6 +166,17 @@ export default function ProjectTimeline() {
     };
     fetchData();
   }, []);
+
+  // Fetch groups (only for buyer/capex_head)
+  const fetchGroups = useCallback(async () => {
+    if (!canManageGroups) return;
+    try {
+      const res = await axios.get(`${API}/project-groups`);
+      setAllGroups(res.data);
+    } catch (e) { console.error("Failed to fetch groups:", e); }
+  }, [canManageGroups]);
+
+  useEffect(() => { fetchGroups(); }, [fetchGroups]);
 
   const uniquePlants = useMemo(() => [...new Set(allRequests.map(r => r.plant).filter(Boolean))], [allRequests]);
 
@@ -205,7 +233,24 @@ export default function ProjectTimeline() {
     });
   }, [enriched, filters, fy]);
 
-  // KPI summary
+  // Build grouped + ungrouped from filtered projects
+  const { groupsWithProjects, ungroupedProjects } = useMemo(() => {
+    const filteredIds = new Set(filtered.map(p => p.id));
+    const groupedIds = new Set();
+
+    const groupsWithProjects = allGroups.map(g => {
+      const childProjects = (g.project_ids || [])
+        .map(pid => filtered.find(p => p.id === pid))
+        .filter(Boolean);
+      for (const p of childProjects) groupedIds.add(p.id);
+      return { ...g, _projects: childProjects };
+    }).filter(g => g._projects.length > 0); // Only show groups that have at least 1 visible project
+
+    const ungroupedProjects = filtered.filter(p => !groupedIds.has(p.id));
+    return { groupsWithProjects, ungroupedProjects };
+  }, [filtered, allGroups]);
+
+  // KPI summary (always based on all filtered)
   const kpis = useMemo(() => ({
     total: filtered.length,
     delayed: filtered.filter(r => r._status === "Delayed").length,
@@ -228,6 +273,50 @@ export default function ProjectTimeline() {
     [enriched, compareIds]
   );
 
+  // Group CRUD handlers
+  const handleSaveGroup = async (data) => {
+    if (data.id) {
+      // Update
+      await axios.put(`${API}/project-groups/${data.id}`, {
+        name: data.name,
+        description: data.description,
+        project_ids: data.project_ids,
+      });
+      toast.success(`Group "${data.name}" updated`);
+    } else {
+      // Create
+      await axios.post(`${API}/project-groups`, {
+        name: data.name,
+        description: data.description,
+        project_ids: data.project_ids,
+      });
+      toast.success(`Group "${data.name}" created`);
+    }
+    await fetchGroups();
+  };
+
+  const handleDeleteGroup = async (groupId) => {
+    const group = allGroups.find(g => g.id === groupId);
+    if (!window.confirm(`Delete group "${group?.name}"? Projects will become ungrouped.`)) return;
+    try {
+      await axios.delete(`${API}/project-groups/${groupId}`);
+      toast.success(`Group "${group?.name}" deleted`);
+      await fetchGroups();
+    } catch (e) {
+      toast.error(e?.response?.data?.detail || "Failed to delete group");
+    }
+  };
+
+  const handleEditGroup = (group) => {
+    setEditingGroup(group);
+    setGroupModalOpen(true);
+  };
+
+  const openNewGroupModal = () => {
+    setEditingGroup(null);
+    setGroupModalOpen(true);
+  };
+
   if (isLoading) {
     return (
       <div className="space-y-4" data-testid="project-timeline-loading">
@@ -246,6 +335,8 @@ export default function ProjectTimeline() {
         onChange={onChange}
         onReset={resetFilters}
         uniquePlants={uniquePlants}
+        fy={fy}
+        onFyChange={setFy}
       />
 
       <div className="px-4 md:px-6 py-6 space-y-6 max-w-[1600px] w-full mx-auto">
@@ -264,30 +355,44 @@ export default function ProjectTimeline() {
             </div>
           </div>
 
-          {/* View toggle */}
-          <div className="flex items-center gap-1 bg-slate-50 rounded-lg border border-slate-200 p-0.5">
-            <button
-              onClick={() => setViewMode("table")}
-              className={
-                "h-8 px-3 inline-flex items-center gap-1.5 text-xs font-medium rounded-md transition " +
-                (viewMode === "table"
-                  ? "bg-white text-slate-800 shadow-sm border border-slate-200"
-                  : "text-slate-500 hover:text-slate-700")
-              }
-            >
-              <Table2 className="w-3.5 h-3.5" /> Table
-            </button>
-            <button
-              onClick={() => setViewMode("gantt")}
-              className={
-                "h-8 px-3 inline-flex items-center gap-1.5 text-xs font-medium rounded-md transition " +
-                (viewMode === "gantt"
-                  ? "bg-white text-slate-800 shadow-sm border border-slate-200"
-                  : "text-slate-500 hover:text-slate-700")
-              }
-            >
-              <GanttChartSquare className="w-3.5 h-3.5" /> Gantt
-            </button>
+          <div className="flex items-center gap-2">
+            {/* Create Group button */}
+            {canManageGroups && (
+              <button
+                onClick={openNewGroupModal}
+                className="h-8 px-3 inline-flex items-center gap-1.5 text-xs font-medium rounded-md text-white transition hover:opacity-90 active:scale-95"
+                style={{ backgroundColor: "var(--brand, #0d9668)" }}
+              >
+                <FolderPlus className="w-3.5 h-3.5" />
+                New Group
+              </button>
+            )}
+
+            {/* View toggle */}
+            <div className="flex items-center gap-1 bg-slate-50 rounded-lg border border-slate-200 p-0.5">
+              <button
+                onClick={() => setViewMode("table")}
+                className={
+                  "h-8 px-3 inline-flex items-center gap-1.5 text-xs font-medium rounded-md transition " +
+                  (viewMode === "table"
+                    ? "bg-white text-slate-800 shadow-sm border border-slate-200"
+                    : "text-slate-500 hover:text-slate-700")
+                }
+              >
+                <Table2 className="w-3.5 h-3.5" /> Table
+              </button>
+              <button
+                onClick={() => setViewMode("gantt")}
+                className={
+                  "h-8 px-3 inline-flex items-center gap-1.5 text-xs font-medium rounded-md transition " +
+                  (viewMode === "gantt"
+                    ? "bg-white text-slate-800 shadow-sm border border-slate-200"
+                    : "text-slate-500 hover:text-slate-700")
+                }
+              >
+                <GanttChartSquare className="w-3.5 h-3.5" /> Gantt
+              </button>
+            </div>
           </div>
         </div>
 
@@ -298,14 +403,21 @@ export default function ProjectTimeline() {
         {viewMode === "table" ? (
           <TimelineTable
             projects={filtered}
+            groups={groupsWithProjects}
+            ungrouped={ungroupedProjects}
             onSelect={setSelected}
             selectedId={selected?.id}
             compareIds={compareIds}
             onToggleCompare={toggleCompare}
+            canManageGroups={canManageGroups}
+            onEditGroup={handleEditGroup}
+            onDeleteGroup={handleDeleteGroup}
           />
         ) : (
           <GanttChart
             projects={filtered}
+            groups={groupsWithProjects}
+            ungrouped={ungroupedProjects}
             onSelect={setSelected}
             selectedId={selected?.id}
             compareIds={compareIds}
@@ -350,6 +462,16 @@ export default function ProjectTimeline() {
           </div>
         </div>
       )}
+
+      {/* Group Manager Modal */}
+      <GroupManager
+        open={groupModalOpen}
+        onClose={() => { setGroupModalOpen(false); setEditingGroup(null); }}
+        onSave={handleSaveGroup}
+        group={editingGroup}
+        allProjects={enriched}
+        existingGroups={allGroups}
+      />
     </div>
   );
 }
