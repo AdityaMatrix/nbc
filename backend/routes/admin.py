@@ -220,7 +220,7 @@ async def admin_reset_password(user_id: str, admin: dict = Depends(require_admin
     user = await db.users.find_one({"id": user_id}, {"_id": 0})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    new_password = "password123"
+    new_password = f"user{str(uuid.uuid4())[:6]}"
     await db.users.update_one({"id": user_id}, {"$set": {"password_hash": hash_password(new_password)}})
     return {"message": f"Password reset to '{new_password}'"}
 
@@ -239,7 +239,7 @@ async def approve_reset_request(request_id: str, admin: dict = Depends(require_a
         raise HTTPException(status_code=404, detail="Reset request not found")
     if req["status"] != "pending":
         raise HTTPException(status_code=400, detail="Request already processed")
-    new_password = "password123"
+    new_password = f"user{str(uuid.uuid4())[:6]}"
     await db.users.update_one({"email": req["email"]}, {"$set": {"password_hash": hash_password(new_password)}})
     await db.password_reset_requests.update_one({"id": request_id}, {
         "$set": {"status": "approved", "processed_by": admin["name"], "processed_at": datetime.now(timezone.utc).isoformat(), "new_password": new_password}

@@ -2803,6 +2803,7 @@ export default function RequestDetail() {
           setNewSampleDialogOpen={setNewSampleDialogOpen}
           handleUpdate={handleUpdate} handleSamplePickup={handleSamplePickupUpdate}
           setUnderPrepDialog={setUnderPrepDialog} setBuyerDecisionDialog={setBuyerDecisionDialog}
+          setDispatchDialog={setDispatchDialog} setDispatchItems={setDispatchItems}
           newComment={newComment} setNewComment={setNewComment}
           handleCommentSubmit={handleCommentSubmit} isSubmitting={isSubmitting}
           formatDate={formatDate} formatDateTime={formatDateTime}

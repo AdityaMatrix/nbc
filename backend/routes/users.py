@@ -63,7 +63,8 @@ async def reset_user_password(user_id: str, current_user: dict = Depends(get_cur
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    default_password = "password123"
+    import uuid
+    default_password = f"user{str(uuid.uuid4())[:6]}"
     new_hash = hash_password(default_password)
     await db.users.update_one({"id": user_id}, {"$set": {"password_hash": new_hash}})
 

@@ -2,8 +2,8 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { formatINR } from "@/lib/capexHelpers";
 
 const COLORS = [
-  "#0d9668", "#2aac7f", "#5dc09a",
-  "#90d4b5", "#c3e8d0",
+  "#0d9668", "#2563eb", "#7c3aed",
+  "#ea580c", "#db2777", "#0891b2", "#4f46e5"
 ];
 
 function ChartTooltip({ active, payload }) {

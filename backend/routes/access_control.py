@@ -121,7 +121,7 @@ DEFAULT_CONFIG = {
                  "user_overrides": []},
                 {"id": "sample_section", "name": "Sample Requests", "desc": "Sample creation, dispatch tracking, delivery confirmation",
                  "enabled": True, "permission": "view",
-                 "roles": ["admin", "capex_head", "buyer", "department_head", "process_engineering"],
+                 "roles": ["admin", "capex_head", "buyer", "department_head", "process_engineering", "user"],
                  "user_overrides": []},
                 {"id": "comments", "name": "Comments & Discussion", "desc": "Thread of comments and notes on the request",
                  "enabled": True, "permission": "editable",

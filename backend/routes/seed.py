@@ -16,6 +16,7 @@ async def seed_default_users():
         return {"message": "Users already exist", "count": existing}
 
     default_users = [
+        {"email": "admin@capex.com", "name": "Admin", "role": UserRole.ADMIN, "password": "admin123"},
         {"email": "manoj@capex.com", "name": "Manoj", "role": UserRole.CAPEX_HEAD, "password": "capex123"},
         {"email": "vijay@capex.com", "name": "Vijay", "role": UserRole.BUYER, "password": "buyer123"},
         {"email": "saurabh@capex.com", "name": "Saurabh", "role": UserRole.BUYER, "password": "buyer123"},
