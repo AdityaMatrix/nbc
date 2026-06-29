@@ -445,7 +445,12 @@ export default function Dashboard() {
       return <span className="flex items-center gap-1 text-emerald-600 font-medium"><Check className="w-3 h-3" />{poNumber}</span>;
     }
     if (poNumber) {
-      return <span className="text-amber-600 text-[10px]">Under Approval {request.po_approval_level ? `(${request.po_approval_level})` : ""}</span>;
+      return (
+        <span className="flex flex-col">
+          <span className="font-mono font-medium text-amber-600">{poNumber}</span>
+          <span className="text-amber-600/80 text-[10px]">Under Approval {request.po_approval_level ? `(${request.po_approval_level})` : ""}</span>
+        </span>
+      );
     }
     return <span className="text-slate-400 text-[10px]">-</span>;
   };

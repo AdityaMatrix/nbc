@@ -211,7 +211,7 @@ export default function UserManagement() {
     setIsSubmitting(true);
     try {
       const response = await axios.post(`${API}/users/${selectedUser.id}/reset-password`);
-      toast.success(response.data.message);
+      toast.success(response.data.message, { duration: 10000 });
       setResetPasswordDialogOpen(false);
       setSelectedUser(null);
     } catch (error) {
@@ -628,7 +628,7 @@ export default function UserManagement() {
             <AlertDialogTitle>Reset Password</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to reset the password for <strong>{selectedUser?.name}</strong>?
-              The password will be reset to <code className="bg-slate-100 px-1 rounded">password123</code>.
+              A new random password will be generated.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

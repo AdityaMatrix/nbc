@@ -145,14 +145,20 @@ export default function AdminDashboard() {
   };
 
   const resetPassword = async (id) => {
-    if (!window.confirm("Reset password to 'password123'?")) return;
-    try { await axios.post(`${API}/admin/users/${id}/reset-password`, {}, { headers }); toast.success("Password reset"); }
-    catch (err) { toast.error("Failed"); }
+    if (!window.confirm("Are you sure you want to generate a new random password for this user?")) return;
+    try { 
+      const res = await axios.post(`${API}/admin/users/${id}/reset-password`, {}, { headers }); 
+      toast.success(res.data.message, { duration: 10000 }); 
+    }
+    catch (err) { toast.error("Failed to reset password"); }
   };
 
   const approveReset = async (id) => {
-    try { await axios.post(`${API}/admin/password-reset-requests/${id}/approve`, {}, { headers }); toast.success("Approved"); fetchAll();
-    } catch (err) { toast.error("Failed"); }
+    try { 
+      const res = await axios.post(`${API}/admin/password-reset-requests/${id}/approve`, {}, { headers }); 
+      toast.success(res.data.message, { duration: 10000 }); 
+      fetchAll();
+    } catch (err) { toast.error("Failed to approve reset"); }
   };
 
   const rejectReset = async (id) => {
